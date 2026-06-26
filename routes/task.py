@@ -58,3 +58,38 @@ def create_task():
         "title": task.title,
         "status": task.status
     }, 201
+
+@task_bp.route("/tasks/<int:hive_id>", methods=["GET"])
+@jwt_required()
+def get_tasks(hive_id):
+
+    current_user_id = int(
+        get_jwt_identity()
+    )
+
+    membership = HiveMember.query.filter_by(
+        hive_id=hive_id,
+        user_id=current_user_id
+    ).first()
+
+    if not membership:
+        return {
+            "error": "You are not a member of this hive"
+        }, 403
+
+    tasks = Task.query.filter_by(
+        hive_id=hive_id
+    ).all()
+
+    result = []
+
+    for task in tasks:
+
+        result.append({
+            "id": task.id,
+            "title": task.title,
+            "description": task.description,
+            "status": task.status
+        })
+
+    return result, 200
