@@ -8,7 +8,11 @@ from werkzeug.security import (
     check_password_hash
 )
 
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt_identity
+)
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -85,9 +89,19 @@ def login():
         }, 401
 
     access_token = create_access_token(
-        identity=user.id
+        identity=str(user.id)
     )
 
     return {
         "access_token": access_token
+    }, 200
+
+@auth_bp.route("/me", methods=["GET"])
+@jwt_required()
+def me():
+
+    current_user_id = get_jwt_identity()
+
+    return {
+        "user_id": current_user_id
     }, 200
