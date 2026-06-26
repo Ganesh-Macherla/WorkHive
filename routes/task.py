@@ -93,3 +93,39 @@ def get_tasks(hive_id):
         })
 
     return result, 200
+
+@task_bp.route(
+    "/tasks/<int:task_id>/complete",
+    methods=["PATCH"]
+)
+@jwt_required()
+def complete_task(task_id):
+
+    task = Task.query.get(task_id)
+
+    if not task:
+        return {
+            "error": "Task not found"
+        }, 404
+
+    current_user_id = int(
+        get_jwt_identity()
+    )
+
+    membership = HiveMember.query.filter_by(
+        hive_id=task.hive_id,
+        user_id=current_user_id
+    ).first()
+
+    if not membership:
+        return {
+            "error": "Not authorized"
+        }, 403
+
+    task.status = "completed"
+
+    db.session.commit()
+
+    return {
+        "message": "Task marked completed"
+    }, 200
