@@ -7,6 +7,7 @@ from models.hive import Hive
 from models.hive_member import HiveMember
 
 from routes.auth import auth_bp
+from routes.hive import hive_bp
 
 app = Flask(__name__)
 
@@ -16,6 +17,7 @@ db.init_app(app)
 jwt.init_app(app)
 
 app.register_blueprint(auth_bp)
+app.register_blueprint(hive_bp)
 
 
 @app.route("/")
