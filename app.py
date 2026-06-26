@@ -3,6 +3,8 @@ from flask import Flask
 from config import Config
 from extensions import db, jwt
 from models.user import User
+from models.hive import Hive
+from models.hive_member import HiveMember
 
 from routes.auth import auth_bp
 
