@@ -1,193 +1,38 @@
-### WorkHive
+# WorkHive
 
-WorkHive is a full-stack collaborative task management platform built with React, Flask, SQLite, and JWT Authentication. It combines personal task management with team collaboration through workspace-based project organization, drag-and-drop task assignment, subtasks, activity tracking, and notifications. 
+## Current Backend Status
 
-*The following are subject to change, and this is nothing but a basic rough sketch of the project*
+### Authentication
 
-## Features
+- ✅ User Registration
+- ✅ User Login
+- ✅ JWT Authentication
+- ✅ Protected Routes
 
-### Authentication & Security
+### Hive Management
 
-- User Registration
-- User Login
-- JWT Authentication
-- Protected Routes
-- Password Hashing
-- Role-Based Access Control
-- Secure API Endpoints
+- ✅ Create Hive
+- ✅ Join Hive
+- ✅ View Hive Tasks
 
-### Personal Task Management
+### Task Management
 
-- Create Tasks
-- View Tasks
-- Edit Tasks
-- Delete Tasks
-- Mark Tasks as Completed
-- Set Task Priority
-- Set Deadlines
-- Search Tasks
+- ✅ Create Task
+- ✅ View Tasks
+- ✅ Update Task
+- ✅ Mark Task as Completed
+- ✅ Delete Task
 
-### Collaborative Workspaces
+### Database Tables
 
-- Create Workspace Rooms
-- Join Rooms using Room Codes
-- Invite Team Members
-- Workspace Roles (Owner, Admin, Member)
-- Multi-user Task Assignment
-- Drag-and-Drop Task Management
-
-### Subtasks
-
-- Create Subtasks
-- Assign Subtasks to Team Members
-- Multiple Assignees per Subtask
-- Progress Tracking
-- Completion Status Management
-
-### Collaboration Features
-
-- Task Comments
-- Activity Timeline
-- User Mentions (@username)
-- Help Requests
-- Resolution Notes
-- Completion Reports
-
-### Notifications
-
-- Task Assignment Notifications
-- Task Completion Notifications
-- Help Request Notifications
-- Mention Notifications
-- Comment Notifications
-- Workspace Notifications
-
-### Analytics & Insights
-
-- Workspace Dashboard
-- Task Completion Statistics
-- User Productivity Metrics
-- Open Help Requests
-- Overdue Tasks Tracking
+- ✅ User
+- ✅ Hive
+- ✅ HiveMember
+- ✅ Task
 
 ---
 
-## Tech Stack
-
-### Frontend
-
-- React.js
-- React Router
-- Axios
-- Bootstrap / Tailwind CSS
-- Drag-and-Drop Library
-
-### Backend
-
-- Flask
-- Flask-SQLAlchemy
-- Flask-JWT-Extended
-- Flask-CORS
-
-### Database
-
-- SQLite
-
-### Deployment
-
-- Frontend: Vercel
-- Backend: Render
-
----
-
-## Project Structure
-
-```text
-tasksphere/
-
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   ├── components/
-│   │   ├── services/
-│   │   ├── hooks/
-│   │   └── context/
-│   └── package.json
-│
-├── backend/
-│   ├── routes/
-│   ├── models/
-│   ├── services/
-│   ├── app.py
-│   ├── config.py
-│   └── requirements.txt
-│
-├── README.md
-└── API_DOCUMENTATION.md
-````
-
----
-
-## Database Design
-
-### Core Entities
-
-* User
-* Room
-* RoomMember
-* Task
-* TaskAssignment
-* SubTask
-* SubTaskAssignment
-* Comment
-* ActivityLog
-* Notification
-* HelpRequest
-* CompletionReport
-
----
-
-## Workflow
-
-### Personal Task Flow
-
-```text
-Register
-    ↓
-Login
-    ↓
-Create Task
-    ↓
-Update Progress
-    ↓
-Complete Task
-```
-
-### Collaborative Task Flow
-
-```text
-Create Workspace
-    ↓
-Invite Members
-    ↓
-Create Task
-    ↓
-Assign Team Members
-    ↓
-Create Subtasks
-    ↓
-Collaborate
-    ↓
-Request Help (Optional)
-    ↓
-Complete Task
-    ↓
-Submit Completion Report
-```
-
----
-
-## API Endpoints
+## Current API Endpoints
 
 ### Authentication
 
@@ -196,70 +41,134 @@ POST /register
 POST /login
 ```
 
+### Hives
+
+```http
+POST /hives
+POST /hives/join
+GET  /tasks/<hive_id>
+```
+
 ### Tasks
 
 ```http
-GET    /tasks
 POST   /tasks
-PUT    /tasks/{id}
-DELETE /tasks/{id}
+PUT    /tasks/<task_id>
+PATCH  /tasks/<task_id>/complete
+DELETE /tasks/<task_id>
 ```
 
-### Rooms
+---
 
-```http
-POST /rooms
-GET  /rooms
-POST /rooms/join
-```
+## Planned Features
 
-### Subtasks
+### User Management
 
-```http
-POST   /subtasks
-PUT    /subtasks/{id}
-DELETE /subtasks/{id}
-```
+- User Profiles
+- Profile Pictures
+- User Search
+
+### Hive Management
+
+- Hive Roles (Owner, Admin, Member)
+- Member Removal
+- Hive Settings
+
+### Task Management
+
+- Task Priorities
+- Due Dates
+- Task Search
+- Task Filtering
+
+### Collaboration
+
+- Task Assignment
+- Subtasks
+- Comments
+- Activity Timeline
+- Mentions (@username)
 
 ### Notifications
 
-```http
-GET /notifications
-PUT /notifications/{id}/read
-```
+- Assignment Notifications
+- Comment Notifications
+- Mention Notifications
+- Completion Notifications
+
+### Analytics
+
+- Hive Dashboard
+- Productivity Metrics
+- Task Completion Statistics
+- Overdue Task Tracking
+
+### Future Enhancements
+
+- React Frontend
+- Drag-and-Drop Task Board
+- Real-Time Collaboration
+- WebSockets
+- Email Notifications
+- File Attachments
+- Calendar View
+- Mobile Application
+- AI-Powered Task Suggestions
 
 ---
 
-## Optional Enhancements Implemented
+## Project Milestones
 
-* Task Priorities
-* User Profiles
-* Notifications
-* Pagination
-* Workspace Analytics
-* Activity Tracking
-* Multi-user Task Ownership
-* Drag-and-Drop Assignment
-* Help Request System
+### Commit #1
+- User Model
+
+### Commit #2
+- Registration Endpoint
+
+### Commit #3
+- Login Endpoint + JWT Authentication
+
+### Commit #4
+- Protected Route Testing
+
+### Commit #5
+- Hive & HiveMember Models
+
+### Commit #6
+- Hive Creation System
+
+### Commit #7
+- Hive Join System
+
+### Commit #8
+- Task Model
+
+### Commit #9
+- Create Task Endpoint
+
+### Commit #10
+- View Tasks Endpoint
+
+### Commit #11
+- Update Task Endpoint
+
+### Commit #12
+- Complete Task Endpoint
+
+### Commit #13
+- Delete Task Endpoint
+
+### Commit #14
+- Documentation & README Improvements
 
 ---
 
-## Future Improvements
+## Next Milestone
 
-* Real-Time Collaboration (WebSockets)
-* Email Notifications
-* File Attachments
-* Calendar View
-* Mobile Application
-* AI-Powered Task Suggestions
+### Commit #15
 
----
-
-## Author
-
-**Ganesh Macherla**
-
-Built as a full-stack collaborative task management platform to explore modern project management workflows, team collaboration, and scalable web application architecture.
-
-```
-```
+- React Frontend Setup
+- Project Structure
+- Routing
+- Authentication Pages
+- API Integration
