@@ -129,3 +129,39 @@ def complete_task(task_id):
     return {
         "message": "Task marked completed"
     }, 200
+
+# deletion
+@task_bp.route(
+    "/tasks/<int:task_id>",
+    methods=["DELETE"]
+)
+@jwt_required()
+def delete_task(task_id):
+
+    task = Task.query.get(task_id)
+
+    if not task:
+        return {
+            "error": "Task not found"
+        }, 404
+
+    current_user_id = int(
+        get_jwt_identity()
+    )
+
+    membership = HiveMember.query.filter_by(
+        hive_id=task.hive_id,
+        user_id=current_user_id
+    ).first()
+
+    if not membership:
+        return {
+            "error": "Not authorized"
+        }, 403
+
+    db.session.delete(task)
+    db.session.commit()
+
+    return {
+        "message": "Task deleted successfully"
+    }, 200
