@@ -117,4 +117,31 @@ def join_hive():
         "hive_id": hive.id,
         "hive_name": hive.name
     }, 200
-    
+
+@hive_bp.route("/hives", methods=["GET"])
+@jwt_required()
+def get_hives():
+
+    current_user_id = int(
+        get_jwt_identity()
+    )
+
+    memberships = HiveMember.query.filter_by(
+        user_id=current_user_id
+    ).all()
+
+    hives = []
+
+    for membership in memberships:
+
+        hive = Hive.query.get(
+            membership.hive_id
+        )
+
+        hives.append({
+            "id": hive.id,
+            "name": hive.name,
+            "room_code": hive.room_code
+        })
+
+    return hives, 200
