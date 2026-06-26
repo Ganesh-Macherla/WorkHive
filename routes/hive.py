@@ -66,3 +66,55 @@ def create_hive():
         "name": new_hive.name,
         "room_code": new_hive.room_code
     }, 201
+
+@hive_bp.route("/hives/join", methods=["POST"])
+@jwt_required()
+def join_hive():
+
+    data = request.get_json()
+
+    room_code = data.get("room_code")
+
+    if not room_code:
+        return {
+            "error": "Room code is required"
+        }, 400
+
+    hive = Hive.query.filter_by(
+        room_code=room_code
+    ).first()
+
+    if not hive:
+        return {
+            "error": "Hive not found"
+        }, 404
+
+    current_user_id = int(
+        get_jwt_identity()
+    )
+
+    existing_member = HiveMember.query.filter_by(
+        hive_id=hive.id,
+        user_id=current_user_id
+    ).first()
+
+    if existing_member:
+        return {
+            "error": "Already a member of this hive"
+        }, 409
+
+    new_member = HiveMember(
+        hive_id=hive.id,
+        user_id=current_user_id,
+        role="member"
+    )
+
+    db.session.add(new_member)
+    db.session.commit()
+
+    return {
+        "message": "Joined hive successfully",
+        "hive_id": hive.id,
+        "hive_name": hive.name
+    }, 200
+    
