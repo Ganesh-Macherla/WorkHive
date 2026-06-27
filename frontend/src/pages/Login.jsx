@@ -18,6 +18,13 @@ function Login() {
 
     console.log(response.data);
 
+    localStorage.setItem(
+      "token",
+      response.data.access_token
+    );
+
+    navigate("/hive");
+
   } catch (error) {
     console.log(error);
     console.log(error.response);
