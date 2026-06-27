@@ -1,9 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 function Login() {
+    const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    console.log("Login button clicked");
+  try {
+    const response = await api.post("/login", {
+      email,
+      password,
+    });
+
+    console.log(response.data);
+
+  } catch (error) {
+    console.log(error);
+    console.log(error.response);
+    alert(JSON.stringify(error.response?.data));
+  }
+};
 
   return (
     <div>
@@ -12,9 +32,9 @@ function Login() {
 
       <input
         type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <br />
@@ -30,7 +50,9 @@ function Login() {
       <br />
       <br />
 
-      <button>Login</button>
+      <button onClick={handleLogin}>
+        Login
+      </button>
 
     </div>
   );
