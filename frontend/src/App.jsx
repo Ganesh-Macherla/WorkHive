@@ -11,7 +11,7 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/hive/:id" element={<Hive />} />
+      <Route path="/hive" element={<Hive />} />
     </Routes>
   );
 }
