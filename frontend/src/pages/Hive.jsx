@@ -1,63 +1,13 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../services/api";
+import { useParams } from "react-router-dom";
 
 function Hive() {
-  const navigate = useNavigate();
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-
-  const handleCreateHive = async () => {
-  try {
-    const token = localStorage.getItem("token");
-
-    const response = await api.post(
-      "/hives",
-      {
-        name,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    console.log(response.data);
-  } catch (error) {
-    console.log(error.response);
-  }
-};
+  const { id } = useParams();
 
   return (
     <div>
-      <h1>Create Hive</h1>
+      <h1>Hive Workspace</h1>
 
-      <br />
-
-      <input
-        type="text"
-        placeholder="Hive Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-
-      <br />
-      <br />
-
-      <textarea
-        placeholder="Description (optional)"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-
-      <br />
-      <br />
-
-      <button onClick={handleCreateHive}>
-        Create Hive
-      </button>
+      <p>Hive ID: {id}</p>
     </div>
   );
 }

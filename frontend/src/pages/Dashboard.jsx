@@ -9,7 +9,7 @@ function Dashboard() {
 
       <br />
 
-      <button onClick={() => navigate("/hive")}>
+      <button onClick={() => navigate("/create-hive")}>
         Create Hive
       </button>
 
