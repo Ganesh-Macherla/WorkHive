@@ -23,7 +23,7 @@ function Login() {
       response.data.access_token
     );
 
-    navigate("/hive");
+    navigate("/dashboard");
 
   } catch (error) {
     console.log(error);
