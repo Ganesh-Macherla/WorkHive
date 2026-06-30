@@ -14,6 +14,8 @@ import random
 import string
 
 
+
+
 hive_bp = Blueprint("hive", __name__)
 
 # amogus time
@@ -70,6 +72,7 @@ def create_hive():
 @hive_bp.route("/hives/join", methods=["POST"])
 @jwt_required()
 def join_hive():
+
 
     data = request.get_json()
 
