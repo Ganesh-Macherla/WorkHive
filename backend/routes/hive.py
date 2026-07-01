@@ -148,3 +148,20 @@ def get_hives():
         })
 
     return hives, 200
+
+@hive_bp.route("/hives/<int:hive_id>", methods=["GET"])
+@jwt_required()
+def get_hive(hive_id):
+
+    hive = Hive.query.get(hive_id)
+
+    if not hive:
+        return {
+            "error": "Hive not found"
+        }, 404
+
+    return {
+        "id": hive.id,
+        "name": hive.name,
+        "room_code": hive.room_code
+    }, 200
