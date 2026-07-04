@@ -75,8 +75,7 @@ function Hive() {
     }
   };
 
-  const handleCompleteTask = async (taskId) => {
-    console.log("Completing task", taskId);
+  const handleCompleteTask = async (taskId) => { 
 
     try {
       const token = localStorage.getItem("token");
@@ -96,6 +95,22 @@ function Hive() {
       console.log(error.response);
     }
   };
+
+  const handleDeleteTask = async (taskId) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    await api.delete(`/tasks/${taskId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    fetchTasks();
+  } catch (error) {
+    console.log(error.response);
+  }
+};
 
   if (!hive) {
     return <h1>Loading...</h1>;
@@ -155,6 +170,13 @@ function Hive() {
 
             <button onClick={() => handleCompleteTask(task.id)}>
               Complete
+            </button>
+
+            <button
+              onClick={() => handleDeleteTask(task.id)}
+              style={{ marginLeft: "10px" }}
+            >
+              Delete
             </button>
 
             <hr />
