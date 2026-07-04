@@ -75,6 +75,28 @@ function Hive() {
     }
   };
 
+  const handleCompleteTask = async (taskId) => {
+    console.log("Completing task", taskId);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      await api.patch(
+        `/tasks/${taskId}/complete`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      fetchTasks();
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
   if (!hive) {
     return <h1>Loading...</h1>;
   }
@@ -130,6 +152,10 @@ function Hive() {
             <p>{task.description}</p>
 
             <p>Status: {task.status}</p>
+
+            <button onClick={() => handleCompleteTask(task.id)}>
+              Complete
+            </button>
 
             <hr />
           </div>
