@@ -11,6 +11,10 @@ function Hive() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+
   useEffect(() => {
     const fetchHive = async () => {
       try {
@@ -112,6 +116,39 @@ function Hive() {
   }
 };
 
+  const startEditing = (task) => {
+  setEditingTaskId(task.id);
+  setEditTitle(task.title);
+  setEditDescription(task.description || "");
+};
+
+const handleUpdateTask = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    await api.put(
+      `/tasks/${editingTaskId}`,
+      {
+        title: editTitle,
+        description: editDescription,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setEditingTaskId(null);
+    setEditTitle("");
+    setEditDescription("");
+
+    fetchTasks();
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
   if (!hive) {
     return <h1>Loading...</h1>;
   }
@@ -162,22 +199,63 @@ function Hive() {
       ) : (
         tasks.map((task) => (
           <div key={task.id}>
-            <h3>{task.title}</h3>
+            {editingTaskId === task.id ? (
+              <>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                />
 
-            <p>{task.description}</p>
+                <br />
+                <br />
 
-            <p>Status: {task.status}</p>
+                <textarea
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                />
 
-            <button onClick={() => handleCompleteTask(task.id)}>
-              Complete
-            </button>
+                <br />
+                <br />
 
-            <button
-              onClick={() => handleDeleteTask(task.id)}
-              style={{ marginLeft: "10px" }}
-            >
-              Delete
-            </button>
+                <button onClick={handleUpdateTask}>
+                  Save
+                </button>
+
+                <button
+                  onClick={() => setEditingTaskId(null)}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <h3>{task.title}</h3>
+
+                <p>{task.description}</p>
+
+                <p>Status: {task.status}</p>
+
+                <button onClick={() => handleCompleteTask(task.id)}>
+                  Complete
+                </button>
+
+                <button
+                  onClick={() => handleDeleteTask(task.id)}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Delete
+                </button>
+
+                <button
+                  onClick={() => startEditing(task)}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Edit
+                </button>
+              </>
+            )}
 
             <hr />
           </div>
