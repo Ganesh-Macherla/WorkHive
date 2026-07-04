@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
+import TaskForm from "../components/TaskForm";
+import TaskCard from "../components/TaskCard";
 
 function Hive() {
   const { id } = useParams();
@@ -165,32 +167,13 @@ const handleUpdateTask = async () => {
 
       <hr />
 
-      <h2>Create Task</h2>
-
-      <input
-        type="text"
-        placeholder="Task Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
+      <TaskForm
+        title={title}
+        description={description}
+        setTitle={setTitle}
+        setDescription={setDescription}
+        handleCreateTask={handleCreateTask}
       />
-
-      <br />
-      <br />
-
-      <textarea
-        placeholder="Task Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-
-      <br />
-      <br />
-
-      <button onClick={handleCreateTask}>
-        Create Task
-      </button>
-
-      <hr />
 
       <h2>Tasks</h2>
 
@@ -198,67 +181,20 @@ const handleUpdateTask = async () => {
         <p>No tasks yet.</p>
       ) : (
         tasks.map((task) => (
-          <div key={task.id}>
-            {editingTaskId === task.id ? (
-              <>
-                <input
-                  type="text"
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                />
-
-                <br />
-                <br />
-
-                <textarea
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                />
-
-                <br />
-                <br />
-
-                <button onClick={handleUpdateTask}>
-                  Save
-                </button>
-
-                <button
-                  onClick={() => setEditingTaskId(null)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <h3>{task.title}</h3>
-
-                <p>{task.description}</p>
-
-                <p>Status: {task.status}</p>
-
-                <button onClick={() => handleCompleteTask(task.id)}>
-                  Complete
-                </button>
-
-                <button
-                  onClick={() => handleDeleteTask(task.id)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Delete
-                </button>
-
-                <button
-                  onClick={() => startEditing(task)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Edit
-                </button>
-              </>
-            )}
-
-            <hr />
-          </div>
+          <TaskCard
+            key={task.id}
+            task={task}
+            editingTaskId={editingTaskId}
+            editTitle={editTitle}
+            editDescription={editDescription}
+            setEditTitle={setEditTitle}
+            setEditDescription={setEditDescription}
+            handleCompleteTask={handleCompleteTask}
+            handleDeleteTask={handleDeleteTask}
+            handleUpdateTask={handleUpdateTask}
+            startEditing={startEditing}
+            setEditingTaskId={setEditingTaskId}
+          />
         ))
       )}
     </div>
