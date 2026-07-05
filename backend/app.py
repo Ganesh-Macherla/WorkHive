@@ -12,6 +12,8 @@ from models.task import Task
 from routes.auth import auth_bp
 from routes.hive import hive_bp
 from routes.task import task_bp
+from models.personal_task import PersonalTask
+from routes.personal_task import personal_task_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -24,7 +26,7 @@ jwt.init_app(app)
 app.register_blueprint(auth_bp)
 app.register_blueprint(hive_bp)
 app.register_blueprint(task_bp)
-
+app.register_blueprint(personal_task_bp)
 
 @app.route("/")
 def home():

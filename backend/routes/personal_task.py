@@ -1,0 +1,137 @@
+from flask import Blueprint, request
+
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity
+)
+
+from models.personal_task import PersonalTask
+from extensions import db
+
+personal_task_bp = Blueprint(
+    "personal_task",
+    __name__
+)
+
+
+@personal_task_bp.route(
+    "/personal-tasks",
+    methods=["POST"]
+)
+@jwt_required()
+def create_personal_task():
+
+    data = request.get_json()
+
+    title = data.get("title")
+    description = data.get("description")
+
+    if not title:
+        return {
+            "error": "Title is required"
+        }, 400
+
+    task = PersonalTask(
+        title=title,
+        description=description,
+        user_id=int(get_jwt_identity())
+    )
+
+    db.session.add(task)
+    db.session.commit()
+
+    return {
+        "id": task.id,
+        "title": task.title,
+        "status": task.status
+    }, 201
+
+
+@personal_task_bp.route(
+    "/personal-tasks",
+    methods=["GET"]
+)
+@jwt_required()
+def get_personal_tasks():
+
+    current_user = int(
+        get_jwt_identity()
+    )
+
+    tasks = PersonalTask.query.filter_by(
+        user_id=current_user
+    ).all()
+
+    result = []
+
+    for task in tasks:
+        result.append({
+            "id": task.id,
+            "title": task.title,
+            "description": task.description,
+            "status": task.status
+        })
+
+    return result, 200
+
+@personal_task_bp.route(
+    "/personal-tasks/<int:task_id>/complete",
+    methods=["PATCH"]
+)
+@jwt_required()
+def complete_personal_task(task_id):
+
+    task = PersonalTask.query.get(task_id)
+
+    if not task:
+        return {
+            "error": "Task not found"
+        }, 404
+
+    current_user = int(
+        get_jwt_identity()
+    )
+
+    if task.user_id != current_user:
+        return {
+            "error": "Not authorized"
+        }, 403
+
+    task.status = "completed"
+
+    db.session.commit()
+
+    return {
+        "message": "Task completed"
+    }, 200
+
+@personal_task_bp.route(
+    "/personal-tasks/<int:task_id>",
+    methods=["DELETE"]
+)
+@jwt_required()
+def delete_personal_task(task_id):
+
+    task = PersonalTask.query.get(task_id)
+
+    if not task:
+        return {
+            "error": "Task not found"
+        }, 404
+
+    current_user = int(
+        get_jwt_identity()
+    )
+
+    if task.user_id != current_user:
+        return {
+            "error": "Not authorized"
+        }, 403
+
+    db.session.delete(task)
+
+    db.session.commit()
+
+    return {
+        "message": "Task deleted"
+    }, 200

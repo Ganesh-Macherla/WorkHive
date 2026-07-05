@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import PersonalTaskSection from "../components/PersonalTaskSection";
 
 function Dashboard() {
   const navigate = useNavigate();
 
   const [hives, setHives] = useState([]);
+  const [roomCode, setRoomCode] = useState("");
 
   const fetchHives = async () => {
     try {
@@ -18,6 +20,30 @@ function Dashboard() {
       });
 
       setHives(response.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const handleJoinHive = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await api.post(
+        "/hives/join",
+        {
+         room_code: roomCode,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setRoomCode("");
+
+      fetchHives();
     } catch (error) {
       console.log(error.response);
     }
@@ -40,7 +66,20 @@ function Dashboard() {
       <br />
       <br />
 
-      <button>
+      
+      <h2>Join Hive</h2>
+
+      <input
+        type="text"
+        placeholder="Enter Room Code"
+        value={roomCode}
+        onChange={(e) => setRoomCode(e.target.value)}
+      />
+
+      <br />
+      <br />
+
+      <button onClick={handleJoinHive}>
         Join Hive
       </button>
 
@@ -74,6 +113,10 @@ function Dashboard() {
           </div>
         ))
       )}
+
+      <hr />
+
+      <PersonalTaskSection />
     </div>
   );
 }
