@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import api from "../services/api";
 import TaskForm from "../components/TaskForm";
 import TaskCard from "../components/TaskCard";
+import HiveHeader from "../components/HiveHeader";
 
 function Hive() {
   const { id } = useParams();
@@ -157,15 +158,7 @@ const handleUpdateTask = async () => {
 
   return (
     <div>
-      <h1>Hive Workspace</h1>
-
-      <h2>{hive.name}</h2>
-
-      <p>Room Code: {hive.room_code}</p>
-
-      <p>Hive ID: {hive.id}</p>
-
-      <hr />
+      <HiveHeader hive={hive} />
 
       <TaskForm
         title={title}
