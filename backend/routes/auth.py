@@ -93,7 +93,8 @@ def login():
     )
 
     return {
-        "access_token": access_token
+        "access_token": access_token,
+        "username": user.username
     }, 200
 
 @auth_bp.route("/me", methods=["GET"])

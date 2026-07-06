@@ -23,6 +23,12 @@ function Login() {
       response.data.access_token
     );
 
+    localStorage.setItem(
+      "username",
+      response.data.username
+    );
+
+
     navigate("/dashboard");
 
   } catch (error) {
