@@ -163,7 +163,10 @@ function Hive() {
   return (
     <div className="min-h-screen bg-slate-950 text-white p-10">
 
-      <HiveHeader hive={hive} />
+      <HiveHeader
+        hive={hive}
+        taskCount={tasks.length}
+      />
 
       <div className="grid lg:grid-cols-2 gap-8 items-start">
 
