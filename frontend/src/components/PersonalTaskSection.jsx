@@ -90,10 +90,16 @@ function PersonalTaskSection() {
   };
 
   return (
-    <div className="bg-slate-900 rounded-2xl p-8 shadow-xl">
-      <h2 className="text-3xl font-bold mb-6">
-        Personal Tasks
-      </h2>
+    <div className="bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-800">
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold">
+          Personal Tasks
+        </h2>
+
+        <p className="text-slate-400 mt-2">
+          Manage your work.
+        </p>
+      </div>
 
       <input
         type="text"
@@ -121,48 +127,49 @@ function PersonalTaskSection() {
       <div className="my-8 border-t border-slate-800"></div>
 
       {tasks.length === 0 ? (
-        <div className="text-center text-slate-400 py-8">
-          No personal tasks.
+        <div className="text-center py-10 text-slate-400">
+          No personal tasks yet.
         </div>
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-6">
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="bg-slate-800 rounded-xl p-5 border border-slate-700"
+              className="bg-slate-800 rounded-2xl p-6 border border-slate-700 hover:border-violet-500 hover:shadow-violet-500/10 transition-all duration-300"
             >
-              <h3 className="text-xl font-semibold">
-                {task.title}
-              </h3>
+              <div className="flex justify-between items-start mb-5">
+                <div>
+                  <h3 className="text-2xl font-bold">
+                    {task.title}
+                  </h3>
 
-              <p className="text-slate-400 mt-2 mb-4">
-                {task.description}
-              </p>
+                  <p className="text-slate-400 mt-3">
+                    {task.description || "No description provided."}
+                  </p>
+                </div>
 
-              <p className="mb-5">
-                Status:{" "}
                 <span
-                  className={`font-semibold ${
+                  className={`px-3 py-1 rounded-full text-sm font-semibold ${
                     task.status === "completed"
-                      ? "text-green-400"
-                      : "text-yellow-400"
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-yellow-500/20 text-yellow-400"
                   }`}
                 >
                   {task.status}
                 </span>
-              </p>
+              </div>
 
               <div className="flex gap-3">
                 <button
                   onClick={() => handleCompleteTask(task.id)}
-                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-medium transition"
+                  className="flex-1 bg-green-600 hover:bg-green-700 py-3 rounded-xl font-semibold transition"
                 >
-                  Complete
+                  ✓ Complete
                 </button>
 
                 <button
                   onClick={() => handleDeleteTask(task.id)}
-                  className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-medium transition"
+                  className="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-semibold transition"
                 >
                   Delete
                 </button>
