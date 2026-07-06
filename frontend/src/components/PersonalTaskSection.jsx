@@ -77,14 +77,11 @@ function PersonalTaskSection() {
     try {
       const token = localStorage.getItem("token");
 
-      await api.delete(
-        `/personal-tasks/${taskId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.delete(`/personal-tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       fetchTasks();
     } catch (error) {
@@ -93,60 +90,86 @@ function PersonalTaskSection() {
   };
 
   return (
-    <div>
-      <h2>Personal Tasks</h2>
+    <div className="bg-slate-900 rounded-2xl p-8 shadow-xl">
+      <h2 className="text-3xl font-bold mb-6">
+        Personal Tasks
+      </h2>
 
       <input
         type="text"
         placeholder="Task Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 mb-4"
       />
-
-      <br />
-      <br />
 
       <textarea
         placeholder="Task Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        rows={4}
+        className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none mb-5"
       />
 
-      <br />
-      <br />
-
-      <button onClick={handleCreateTask}>
-        Create Personal Task
+      <button
+        onClick={handleCreateTask}
+        className="w-full bg-violet-600 hover:bg-violet-700 rounded-xl py-4 font-semibold text-lg transition"
+      >
+        + Create Personal Task
       </button>
 
-      <hr />
+      <div className="my-8 border-t border-slate-800"></div>
 
       {tasks.length === 0 ? (
-        <p>No personal tasks.</p>
+        <div className="text-center text-slate-400 py-8">
+          No personal tasks.
+        </div>
       ) : (
-        tasks.map((task) => (
-          <div key={task.id}>
-            <h3>{task.title}</h3>
-
-            <p>{task.description}</p>
-
-            <p>Status: {task.status}</p>
-
-            <button
-              onClick={() => handleCompleteTask(task.id)}
+        <div className="space-y-5">
+          {tasks.map((task) => (
+            <div
+              key={task.id}
+              className="bg-slate-800 rounded-xl p-5 border border-slate-700"
             >
-              Complete
-            </button>
+              <h3 className="text-xl font-semibold">
+                {task.title}
+              </h3>
 
-            <button
-              onClick={() => handleDeleteTask(task.id)}
-            >
-              Delete
-            </button>
+              <p className="text-slate-400 mt-2 mb-4">
+                {task.description}
+              </p>
 
-            <hr />
-          </div>
-        ))
+              <p className="mb-5">
+                Status:{" "}
+                <span
+                  className={`font-semibold ${
+                    task.status === "completed"
+                      ? "text-green-400"
+                      : "text-yellow-400"
+                  }`}
+                >
+                  {task.status}
+                </span>
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => handleCompleteTask(task.id)}
+                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-medium transition"
+                >
+                  Complete
+                </button>
+
+                <button
+                  onClick={() => handleDeleteTask(task.id)}
+                  className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-medium transition"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
