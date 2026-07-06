@@ -49,18 +49,34 @@ function Dashboard() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
   useEffect(() => {
     fetchHives();
   }, []);
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className="min-h-screen bg-slate-950 text-white p-10">
+      <div className="mb-10">
+        <h1 className="text-5xl font-bold">
+          Dashboard
+        </h1>
+
+        <p className="text-slate-400 mt-2">
+          Manage your hives and personal tasks.
+        </p>
+      </div>
 
       <br />
 
-      <button onClick={() => navigate("/create-hive")}>
-        Create Hive
+      <button
+        onClick={() => navigate("/create-hive")}
+        className="bg-violet-600 hover:bg-violet-700 px-5 py-2 rounded-lg font-medium transition"
+      >
+      Create Hive
       </button>
 
       <br />
@@ -79,14 +95,20 @@ function Dashboard() {
       <br />
       <br />
 
-      <button onClick={handleJoinHive}>
+      <button
+        onClick={handleJoinHive}
+        className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-medium transition"
+      >
         Join Hive
       </button>
 
       <br />
       <br />
 
-      <button>
+      <button
+        onClick={handleLogout}
+        className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-lg font-medium transition"
+      >
         Logout
       </button>
 
