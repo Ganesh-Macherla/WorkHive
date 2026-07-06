@@ -4,6 +4,7 @@ import api from "../services/api";
 import PersonalTaskSection from "../components/PersonalTaskSection";
 import DashboardHeader from "../components/DashboardHeader";
 import HeroCards from "../components/HeroCards";
+import HiveSection from "../components/HiveSection";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -79,51 +80,10 @@ function Dashboard() {
 
       {/* Main Grid */}
       <div className="grid lg:grid-cols-2 gap-8 items-start">
-        {/* LEFT COLUMN */}
-        <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-xl">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold">
-              Your Hives
-            </h2>
-
-            <p className="text-slate-400 mt-2">
-              Your collaborative workspaces.
-            </p>
-          </div>
-
-          {hives.length === 0 ? (
-            <div className="text-center py-10 text-slate-400">
-              No hives yet.
-            </div>
-          ) : (
-            <div className="space-y-5">
-              {hives.map((hive) => (
-                <div
-                  key={hive.id}
-                  className="bg-slate-800 rounded-xl p-5 border border-slate-700 hover:border-violet-500 hover:shadow-violet-500/10 transition-all"
-                >
-                  <h3 className="text-xl font-bold mb-3">
-                    {hive.name}
-                  </h3>
-
-                  <p className="text-slate-400">
-                    Room Code:
-                    <span className="ml-2 font-mono text-violet-400 font-semibold">
-                      {hive.room_code}
-                    </span>
-                  </p>
-
-                  <button
-                    onClick={() => navigate(`/hive/${hive.id}`)}
-                    className="mt-5 bg-violet-600 hover:bg-violet-700 px-5 py-2 rounded-xl font-semibold transition"
-                  >
-                    Open Workspace →
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <HiveSection
+          hives={hives}
+          navigate={navigate}
+        />
 
         {/* RIGHT COLUMN */}
         <PersonalTaskSection />
