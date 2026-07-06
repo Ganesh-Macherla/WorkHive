@@ -73,6 +73,25 @@ function PersonalTaskSection() {
     }
   };
 
+  const handleDeleteTask = async (taskId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await api.delete(
+        `/personal-tasks/${taskId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      fetchTasks();
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
   return (
     <div>
       <h2>Personal Tasks</h2>
@@ -117,6 +136,12 @@ function PersonalTaskSection() {
               onClick={() => handleCompleteTask(task.id)}
             >
               Complete
+            </button>
+
+            <button
+              onClick={() => handleDeleteTask(task.id)}
+            >
+              Delete
             </button>
 
             <hr />
