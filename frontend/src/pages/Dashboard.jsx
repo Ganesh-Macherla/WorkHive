@@ -83,27 +83,26 @@ function Dashboard() {
       <br />
 
       
-      <h2>Join Hive</h2>
+      <div className="bg-slate-900 rounded-xl p-6 mt-8 max-w-md shadow-lg">
+        <h2 className="text-xl font-semibold mb-4">
+          Join Hive
+        </h2>
 
-      <input
-        type="text"
-        placeholder="Enter Room Code"
-        value={roomCode}
-        onChange={(e) => setRoomCode(e.target.value)}
-      />
+        <input
+          type="text"
+          placeholder="Enter Room Code"
+          value={roomCode}
+          onChange={(e) => setRoomCode(e.target.value)}
+          className="w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-3 mb-4 outline-none focus:ring-2 focus:ring-violet-500"
+        />
 
-      <br />
-      <br />
-
-      <button
-        onClick={handleJoinHive}
-        className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-medium transition"
-      >
-        Join Hive
-      </button>
-
-      <br />
-      <br />
+        <button
+          onClick={handleJoinHive}
+          className="w-full bg-blue-600 hover:bg-blue-700 rounded-lg py-3 font-semibold transition"
+        >
+          Join Hive
+        </button>
+      </div>
 
       <button
         onClick={handleLogout}
@@ -112,7 +111,7 @@ function Dashboard() {
         Logout
       </button>
 
-      <hr />
+      <div className="my-10 border-t border-slate-800"></div>
 
       <h2>Your Hives</h2>
 
