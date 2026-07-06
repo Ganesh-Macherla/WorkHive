@@ -53,6 +53,26 @@ function PersonalTaskSection() {
     }
   };
 
+  const handleCompleteTask = async (taskId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await api.patch(
+        `/personal-tasks/${taskId}/complete`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      fetchTasks();
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
   return (
     <div>
       <h2>Personal Tasks</h2>
@@ -92,6 +112,12 @@ function PersonalTaskSection() {
             <p>{task.description}</p>
 
             <p>Status: {task.status}</p>
+
+            <button
+              onClick={() => handleCompleteTask(task.id)}
+            >
+              Complete
+            </button>
 
             <hr />
           </div>
