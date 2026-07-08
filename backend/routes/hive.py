@@ -7,6 +7,8 @@ from flask_jwt_extended import (
 
 from models.hive import Hive
 from models.hive_member import HiveMember
+from models.user import User
+
 
 from extensions import db
 
@@ -165,3 +167,28 @@ def get_hive(hive_id):
         "name": hive.name,
         "room_code": hive.room_code
     }, 200
+
+@hive_bp.route("/hives/<int:hive_id>/members", methods=["GET"])
+@jwt_required()
+def get_hive_members(hive_id):
+
+    memberships = HiveMember.query.filter_by(
+        hive_id=hive_id
+    ).all()
+
+    members = []
+
+    for membership in memberships:
+
+        user = User.query.get(
+            membership.user_id
+        )
+
+        if user:
+            members.append({
+                "id": user.id,
+                "username": user.username,
+                "role": membership.role
+            })
+
+    return members, 200
