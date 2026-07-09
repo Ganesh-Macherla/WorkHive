@@ -5,6 +5,7 @@ import api from "../services/api";
 import HiveHeader from "../components/HiveHeader";
 import TaskForm from "../components/TaskForm";
 import TaskSection from "../components/TaskSection";
+import MemberSection from "../components/MemberSection";
 
 function Hive() {
   const { id } = useParams();
@@ -168,15 +169,25 @@ function Hive() {
         taskCount={tasks.length}
       />
 
-      <div className="grid lg:grid-cols-2 gap-8 items-start">
+      {/* Create Task + Members */}
+      <div className="grid lg:grid-cols-3 gap-8 mt-8">
 
-        <TaskForm
-          title={title}
-          description={description}
-          setTitle={setTitle}
-          setDescription={setDescription}
-          handleCreateTask={handleCreateTask}
-        />
+        <div className="lg:col-span-2">
+          <TaskForm
+            title={title}
+            description={description}
+            setTitle={setTitle}
+            setDescription={setDescription}
+            handleCreateTask={handleCreateTask}
+          />
+        </div>
+
+        <MemberSection hiveId={id} />
+
+      </div>
+
+      {/* Tasks */}
+      <div className="mt-8">
 
         <TaskSection
           tasks={tasks}
