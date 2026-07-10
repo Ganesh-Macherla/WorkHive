@@ -3,6 +3,9 @@ function TaskForm({
   setTitle,
   description,
   setDescription,
+  assignedTo,
+  setAssignedTo,
+  members,
   handleCreateTask,
 }) {
   return (
@@ -40,6 +43,29 @@ function TaskForm({
         onChange={(e) => setDescription(e.target.value)}
         className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white placeholder:text-slate-500 resize-none focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
       />
+
+      <label className="block text-sm text-slate-400 mb-2">
+        Assign To
+      </label>
+
+      <select
+        value={assignedTo}
+        onChange={(e) => setAssignedTo(e.target.value)}
+        className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
+      >
+        <option value="">
+          Unassigned
+        </option>
+
+        {members.map((member) => (
+          <option
+            key={member.id}
+            value={member.id}
+          >
+            {member.username} ({member.role})
+          </option>
+        ))}
+      </select>
 
       <button
         onClick={handleCreateTask}

@@ -12,13 +12,50 @@ function Hive() {
 
   const [hive, setHive] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [members, setMembers] = useState([]);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [assignedTo, setAssignedTo] = useState("");
 
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
+
+  const fetchTasks = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await api.get(`/tasks/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setTasks(response.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const fetchMembers = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await api.get(
+        `/hives/${id}/members`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setMembers(response.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
 
   useEffect(() => {
     const fetchHive = async () => {
@@ -39,23 +76,8 @@ function Hive() {
 
     fetchHive();
     fetchTasks();
+    fetchMembers();
   }, [id]);
-
-  const fetchTasks = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const response = await api.get(`/tasks/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setTasks(response.data);
-    } catch (error) {
-      console.log(error.response);
-    }
-  };
 
   const handleCreateTask = async () => {
     try {
@@ -67,6 +89,7 @@ function Hive() {
           title,
           description,
           hive_id: id,
+          assigned_to: assignedTo || null,
         },
         {
           headers: {
@@ -77,6 +100,7 @@ function Hive() {
 
       setTitle("");
       setDescription("");
+      setAssignedTo("");
 
       fetchTasks();
     } catch (error) {
@@ -163,7 +187,6 @@ function Hive() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-10">
-
       <HiveHeader
         hive={hive}
         taskCount={tasks.length}
@@ -171,24 +194,24 @@ function Hive() {
 
       {/* Create Task + Members */}
       <div className="grid lg:grid-cols-3 gap-8 mt-8">
-
         <div className="lg:col-span-2">
           <TaskForm
             title={title}
             description={description}
             setTitle={setTitle}
             setDescription={setDescription}
+            assignedTo={assignedTo}
+            setAssignedTo={setAssignedTo}
+            members={members}
             handleCreateTask={handleCreateTask}
           />
         </div>
 
         <MemberSection hiveId={id} />
-
       </div>
 
       {/* Tasks */}
       <div className="mt-8">
-
         <TaskSection
           tasks={tasks}
           handleCompleteTask={handleCompleteTask}
@@ -202,9 +225,7 @@ function Hive() {
           handleUpdateTask={handleUpdateTask}
           setEditingTaskId={setEditingTaskId}
         />
-
       </div>
-
     </div>
   );
 }

@@ -13,7 +13,6 @@ function TaskCard({
 }) {
   return (
     <div className="bg-slate-800 rounded-xl p-5 border border-slate-700 hover:border-violet-500 hover:shadow-violet-500/10 transition-all">
-
       {editingTaskId === task.id ? (
         <>
           <h3 className="text-xl font-bold mb-6">
@@ -67,24 +66,37 @@ function TaskCard({
             {task.description || "No description provided."}
           </p>
 
-          <div className="mt-5">
-            <span className="text-slate-400">
-              Status:
-            </span>
+          <div className="mt-5 space-y-2">
+            <div>
+              <span className="text-slate-400">
+                Status:
+              </span>
 
-            <span
-              className={`ml-2 font-semibold ${
-                task.status === "completed"
-                  ? "text-green-400"
-                  : "text-yellow-400"
-              }`}
-            >
-              {task.status}
-            </span>
+              <span
+                className={`ml-2 font-semibold ${
+                  task.status === "completed"
+                    ? "text-green-400"
+                    : "text-yellow-400"
+                }`}
+              >
+                {task.status}
+              </span>
+            </div>
+
+            <div>
+              <span className="text-slate-400">
+                Assigned to:
+              </span>
+
+              <span className="ml-2 font-semibold text-violet-400">
+                {task.assigned_to
+                  ? task.assigned_to.username
+                  : "Unassigned"}
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-3 mt-6">
-
             {task.status !== "completed" && (
               <button
                 onClick={() => handleCompleteTask(task.id)}
@@ -107,7 +119,6 @@ function TaskCard({
             >
               Delete
             </button>
-
           </div>
         </>
       )}
