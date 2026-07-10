@@ -41,3 +41,9 @@ class Task(db.Model):
         db.ForeignKey("user.id"),
         nullable=False
     )
+
+    assigned_to = db.Column(
+        db.Integer,
+        db.ForeignKey("user.id"),
+        nullable=True
+    )

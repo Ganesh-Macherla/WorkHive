@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_migrate import Migrate
 
 
 from config import Config
@@ -22,6 +23,8 @@ app.config.from_object(Config)
 
 db.init_app(app)
 jwt.init_app(app)
+
+migrate = Migrate(app, db)
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(hive_bp)
