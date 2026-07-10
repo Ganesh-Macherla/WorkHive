@@ -7,6 +7,7 @@ from flask_jwt_extended import (
 
 from models.task import Task
 from models.hive_member import HiveMember
+from models.user import User
 
 from extensions import db
 
@@ -23,6 +24,7 @@ def create_task():
     title = data.get("title")
     description = data.get("description")
     hive_id = data.get("hive_id")
+    assigned_to = data.get("assigned_to")
 
     if not title or not hive_id:
         return {
@@ -47,7 +49,8 @@ def create_task():
         title=title,
         description=description,
         hive_id=hive_id,
-        created_by=current_user_id
+        created_by=current_user_id,
+        assigned_to=assigned_to
     )
 
     db.session.add(task)
@@ -85,11 +88,23 @@ def get_tasks(hive_id):
 
     for task in tasks:
 
+        assigned_user = None
+
+        if task.assigned_to:
+            user = User.query.get(task.assigned_to)
+
+            if user:
+                assigned_user = {
+                    "id": user.id,
+                    "username": user.username
+                }
+
         result.append({
             "id": task.id,
             "title": task.title,
             "description": task.description,
-            "status": task.status
+            "status": task.status,
+            "assigned_to": assigned_user
         })
 
     return result, 200
@@ -204,6 +219,11 @@ def update_task(task_id):
     task.description = data.get(
         "description",
         task.description
+    )
+
+    task.assigned_to = data.get(
+        "assigned_to",
+        task.assigned_to
     )
 
     db.session.commit()

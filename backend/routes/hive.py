@@ -150,6 +150,7 @@ def get_hives():
         })
 
     return hives, 200
+    print(result)
 
 @hive_bp.route("/hives/<int:hive_id>", methods=["GET"])
 @jwt_required()
