@@ -4,6 +4,10 @@ function HeroCards({
   setRoomCode,
   handleJoinHive,
   hives,
+  personalPending,
+  personalCompleted,
+  teamPending,
+  teamCompleted,
 }) {
   return (
     <div className="grid lg:grid-cols-3 gap-6 mb-12">
@@ -54,13 +58,13 @@ function HeroCards({
         </button>
       </div>
 
-      {/* Workspace Stats */}
+      {/* Your Workspace Stats */}
       <div className="bg-slate-900 rounded-2xl p-7 border border-slate-800 shadow-xl">
         <h2 className="text-2xl font-bold mb-6">
-          Workspace Stats
+          Your Workspace Stats
         </h2>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
 
           <div className="flex justify-between">
             <span className="text-slate-400">
@@ -72,30 +76,60 @@ function HeroCards({
             </span>
           </div>
 
-          <div className="flex justify-between">
-            <span className="text-slate-400">
+          <div className="border-t border-slate-800 pt-4">
+
+            <p className="text-sm uppercase tracking-wide text-slate-500 mb-3">
               Personal Tasks
-            </span>
-
-            <span className="font-bold">
-              Coming Soon
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-slate-400">
-              Team Tasks
-            </span>
-
-            <span className="font-bold">
-              Coming Soon
-            </span>
-          </div>
-
-          <div className="border-t border-slate-800 pt-5 mt-5">
-            <p className="text-sm text-slate-500">
-              Analytics dashboard coming soon.
             </p>
+
+            <div className="flex justify-between mb-2">
+              <span className="text-slate-400">
+                Pending
+              </span>
+
+              <span className="font-bold text-yellow-400">
+                {personalPending}
+              </span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-slate-400">
+                Completed
+              </span>
+
+              <span className="font-bold text-green-400">
+                {personalCompleted}
+              </span>
+            </div>
+
+          </div>
+
+          <div className="border-t border-slate-800 pt-4">
+
+            <p className="text-sm uppercase tracking-wide text-slate-500 mb-3">
+              Team Tasks
+            </p>
+
+            <div className="flex justify-between mb-2">
+              <span className="text-slate-400">
+                Pending
+              </span>
+
+              <span className="font-bold text-yellow-400">
+                {teamPending}
+              </span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-slate-400">
+                Completed
+              </span>
+
+              <span className="font-bold text-green-400">
+                {teamCompleted}
+              </span>
+            </div>
+
           </div>
 
         </div>
