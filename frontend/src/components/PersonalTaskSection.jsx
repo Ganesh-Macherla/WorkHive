@@ -522,7 +522,7 @@ function PersonalTaskSection() {
             return (
               <div
                 key={task.id}
-                className="bg-slate-800 rounded-2xl p-6 border border-slate-700 hover:border-violet-500 hover:shadow-violet-500/10 transition-all duration-300"
+                className="bg-slate-800 rounded-xl p-5 border border-slate-700 hover:border-violet-500 hover:shadow-violet-500/10 transition-all"
               >
                 {editingTaskId === task.id ? (
                   <>
@@ -606,18 +606,41 @@ function PersonalTaskSection() {
                       </button>
                     </div>
                   </>
-                ) : (
-                  <>
-                    <div className="flex justify-between items-start mb-5">
-                      <div>
-                        <h3 className="text-2xl font-bold">
+                    ) : (
+                      <>
+                        <h3 className="text-xl font-bold">
                           {task.title}
                         </h3>
 
-                        <div className="text-slate-400 mt-3">
-                          <div className="mt-3">
+                        <p className="text-slate-400 mt-3">
+                          {task.description || "No description provided."}
+                        </p>
+
+                        <div className="mt-5 space-y-2">
+
+                          <div>
+                            <span className="text-slate-400">
+                              Status:
+                            </span>
+
                             <span
-                              className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              className={`ml-2 font-semibold ${
+                                task.status === "completed"
+                                  ? "text-green-400"
+                                  : "text-yellow-400"
+                              }`}
+                            >
+                              {task.status}
+                            </span>
+                          </div>
+
+                          <div>
+                            <span className="text-slate-400">
+                              Priority:
+                            </span>
+
+                            <span
+                              className={`ml-2 px-2 py-1 rounded-full text-sm font-semibold ${
                                 task.priority === "high"
                                   ? "bg-red-500/20 text-red-400"
                                   : task.priority === "medium"
@@ -628,66 +651,55 @@ function PersonalTaskSection() {
                               {task.priority}
                             </span>
                           </div>
-                          {task.description ||
-                            "No description provided."}
+
+                          {formattedDueDate && (
+                            <div>
+                              <span className="text-slate-400">
+                                Due:
+                              </span>
+
+                              <span className="ml-2 font-semibold text-red-400">
+                                {formattedDueDate}
+                              </span>
+                            </div>
+                          )}
+
                         </div>
 
-                        {formattedDueDate && (
-                          <p className="text-red-400 mt-2 font-medium">
-                            Due: {formattedDueDate}
-                          </p>
-                        )}
-                      </div>
+                        <div className="flex flex-wrap gap-3 mt-6">
 
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          task.status ===
-                          "completed"
-                            ? "bg-green-500/20 text-green-400"
-                            : "bg-yellow-500/20 text-yellow-400"
-                        }`}
-                      >
-                        {task.status}
-                      </span>
-                    </div>
+                          {task.status !== "completed" && (
+                            <button
+                              onClick={() =>
+                                handleCompleteTask(task.id)
+                              }
+                              className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-medium transition"
+                            >
+                              Complete
+                            </button>
+                          )}
 
-                    <div className="flex flex-wrap gap-3">
-                      {task.status !==
-                        "completed" && (
-                        <button
-                          onClick={() =>
-                            handleCompleteTask(
-                              task.id
-                            )
-                          }
-                          className="flex-1 bg-green-600 hover:bg-green-700 py-3 rounded-xl font-semibold transition"
-                        >
-                          Complete
-                        </button>
-                      )}
+                          <button
+                            onClick={() =>
+                              startEditing(task)
+                            }
+                            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition"
+                          >
+                            Edit
+                          </button>
 
-                      <button
-                        onClick={() =>
-                          startEditing(task)
-                        }
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold transition"
-                      >
-                        Edit
-                      </button>
+                          <button
+                            onClick={() =>
+                              handleDeleteTask(task.id)
+                            }
+                            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-medium transition"
+                          >
+                            Delete
+                          </button>
 
-                      <button
-                        onClick={() =>
-                          handleDeleteTask(
-                            task.id
-                          )
-                        }
-                        className="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-semibold transition"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </>
-                )}
+                        </div>
+                      </>
+                    )}
               </div>
             );
           })}
