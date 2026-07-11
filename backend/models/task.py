@@ -42,8 +42,24 @@ class Task(db.Model):
         nullable=False
     )
 
+    due_date = db.Column(
+        db.Date,
+        nullable=True
+    )
+
+    priority = db.Column(
+        db.String(20),
+        default="medium"
+    )
+
     assigned_to = db.Column(
         db.Integer,
         db.ForeignKey("user.id"),
         nullable=True
     )
+
+    priority = db.Column(
+        db.String(20),
+        default="medium"
+    )
+    

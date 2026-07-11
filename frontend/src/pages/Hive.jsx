@@ -28,12 +28,14 @@ function Hive() {
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [priority, setPriority] = useState("medium");
 
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editAssignedTo, setEditAssignedTo] = useState("");
   const [editDueDate, setEditDueDate] = useState("");
+  const [editPriority, setEditPriority] = useState("medium");
 
   const fetchTasks = async () => {
     try {
@@ -114,6 +116,7 @@ function Hive() {
           hive_id: id,
           assigned_to: assignedTo || null,
           due_date: dueDate || null,
+          priority,
         },
         {
           headers: {
@@ -131,6 +134,7 @@ function Hive() {
       setDescription("");
       setAssignedTo("");
       setDueDate("");
+      setPriority("medium");
 
       if (member) {
         toast.success(
@@ -225,6 +229,10 @@ function Hive() {
     setEditDueDate(
       task.due_date || ""
     );
+
+    setEditPriority(
+      task.priority || "medium"
+    );
   };
 
   const handleUpdateTask = async () => {
@@ -258,6 +266,7 @@ function Hive() {
             editAssignedTo || null,
           due_date:
             editDueDate || null,
+          priority: editPriority,
         },
         {
           headers: {
@@ -271,6 +280,7 @@ function Hive() {
       setEditDescription("");
       setEditAssignedTo("");
       setEditDueDate("");
+      setEditPriority("medium");
 
       const oldDueDate = oldTask?.due_date;
 
@@ -385,6 +395,8 @@ function Hive() {
             setAssignedTo={setAssignedTo}
             members={members}
             handleCreateTask={handleCreateTask}
+            priority={priority}
+            setPriority={setPriority}
           />
         </div>
 
@@ -415,6 +427,8 @@ function Hive() {
           setEditingTaskId={setEditingTaskId}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          editPriority={editPriority}
+          setEditPriority={setEditPriority}
         />
       </div>
     </div>

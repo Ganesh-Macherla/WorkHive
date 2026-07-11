@@ -7,6 +7,8 @@ function TaskForm({
   setAssignedTo,
   dueDate,
   setDueDate,
+  priority,
+  setPriority,
   members,
   handleCreateTask,
 }) {
@@ -79,6 +81,28 @@ function TaskForm({
         onChange={(e) => setDueDate(e.target.value)}
         className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
       />
+
+      <label className="block text-sm text-slate-400 mb-2">
+        Priority
+      </label>
+
+      <select
+        value={priority}
+        onChange={(e) => setPriority(e.target.value)}
+        className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
+      >
+        <option value="low">
+          🟢 Low
+        </option>
+
+        <option value="medium">
+          🟡 Medium
+        </option>
+
+        <option value="high">
+          🔴 High
+        </option>
+      </select>
 
       <button
         onClick={handleCreateTask}

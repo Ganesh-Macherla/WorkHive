@@ -9,6 +9,8 @@ function TaskSection({
   setDueDate,
   editDueDate,
   setEditDueDate,
+  editPriority,
+  setEditPriority,
   searchQuery,
   setSearchQuery,
   editingTaskId,
@@ -169,6 +171,8 @@ function TaskSection({
               handleUpdateTask={handleUpdateTask}
               startEditing={startEditing}
               setEditingTaskId={setEditingTaskId}
+              editPriority={editPriority}
+              setEditPriority={setEditPriority}
             />
           ))}
 

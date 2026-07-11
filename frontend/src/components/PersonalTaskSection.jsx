@@ -8,12 +8,16 @@ function PersonalTaskSection() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [priority, setPriority] = useState("medium");
 
   const [editingTaskId, setEditingTaskId] = useState(null);
 
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editDueDate, setEditDueDate] = useState("");
+
+  const [editPriority, setEditPriority] =
+    useState("medium");
 
   const fetchTasks = async () => {
     try {
@@ -45,6 +49,7 @@ function PersonalTaskSection() {
           title,
           description,
           due_date: dueDate || null,
+          priority,
         },
         {
           headers: {
@@ -56,6 +61,7 @@ function PersonalTaskSection() {
       setTitle("");
       setDescription("");
       setDueDate("");
+      setPriority("medium");
 
       toast.success(
         dueDate
@@ -136,6 +142,10 @@ function PersonalTaskSection() {
     setEditDueDate(
       task.due_date || ""
     );
+
+    setEditPriority(
+      task.priority || "medium"
+    );
   };
 
   const handleUpdateTask = async () => {
@@ -150,6 +160,9 @@ function PersonalTaskSection() {
       const oldDueDate =
         oldTask?.due_date;
 
+      const oldPriority =
+        oldTask?.priority;
+
       await api.put(
         `/personal-tasks/${editingTaskId}/edit`,
         {
@@ -157,6 +170,7 @@ function PersonalTaskSection() {
           description: editDescription,
           due_date:
             editDueDate || null,
+          priority: editPriority,
         },
         {
           headers: {
@@ -170,18 +184,27 @@ function PersonalTaskSection() {
       setEditTitle("");
       setEditDescription("");
       setEditDueDate("");
+      setEditPriority("medium");
 
-      if (oldDueDate !== editDueDate) {
-        if (editDueDate) {
-          toast.success(
-            `Changed due date of "${editTitle}" to ${editDueDate}`
-          );
-        } else {
-          toast.success(
-            `Removed due date from "${editTitle}"`
-          );
-        }
-      } else {
+      if (oldPriority !== editPriority) {
+        toast.success(
+          `Changed priority of "${editTitle}" to ${editPriority}`
+        );
+      } 
+      
+      else if (oldDueDate !== editDueDate) {
+  if (editDueDate) {
+    toast.success(
+      `Changed due date of "${editTitle}" to ${editDueDate}`
+    );
+  } else {
+    toast.success(
+      `Removed due date from "${editTitle}"`
+    );
+  }
+} 
+
+      else {
         toast.success(
           `Updated personal task "${editTitle}"`
         );
@@ -237,6 +260,30 @@ function PersonalTaskSection() {
         }
         className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-5"
       />
+
+      <label className="block text-sm text-slate-400 mb-2">
+        Priority
+      </label>
+
+      <select
+        value={priority}
+        onChange={(e) =>
+          setPriority(e.target.value)
+        }
+        className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-5"
+      >
+        <option value="low">
+          🟢 Low
+        </option>
+
+        <option value="medium">
+          🟡 Medium
+        </option>
+
+        <option value="high">
+          🔴 High
+        </option>
+      </select>
 
       <button
         onClick={handleCreateTask}
@@ -311,11 +358,33 @@ function PersonalTaskSection() {
                       className="w-full rounded-xl bg-slate-700 border border-slate-600 px-5 py-4 text-white mb-5"
                     />
 
+                    <label className="block text-sm text-slate-400 mb-2">
+                      Priority
+                    </label>
+
+                    <select
+                      value={editPriority}
+                      onChange={(e) =>
+                        setEditPriority(e.target.value)
+                      }
+                      className="w-full rounded-xl bg-slate-700 border border-slate-600 px-5 py-4 text-white mb-5"
+                    >
+                      <option value="low">
+                        🟢 Low
+                      </option>
+
+                      <option value="medium">
+                        🟡 Medium
+                      </option>
+
+                      <option value="high">
+                        🔴 High
+                      </option>
+                    </select>
+
                     <div className="flex gap-3">
                       <button
-                        onClick={
-                          handleUpdateTask
-                        }
+                        onClick={handleUpdateTask}
                         className="flex-1 bg-violet-600 hover:bg-violet-700 py-3 rounded-xl font-semibold transition"
                       >
                         Save
@@ -341,10 +410,23 @@ function PersonalTaskSection() {
                           {task.title}
                         </h3>
 
-                        <p className="text-slate-400 mt-3">
+                        <div className="text-slate-400 mt-3">
+                          <div className="mt-3">
+                            <span
+                              className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                                task.priority === "high"
+                                  ? "bg-red-500/20 text-red-400"
+                                  : task.priority === "medium"
+                                  ? "bg-yellow-500/20 text-yellow-400"
+                                  : "bg-green-500/20 text-green-400"
+                              }`}
+                            >
+                              {task.priority}
+                            </span>
+                          </div>
                           {task.description ||
                             "No description provided."}
-                        </p>
+                        </div>
 
                         {formattedDueDate && (
                           <p className="text-red-400 mt-2 font-medium">
@@ -376,7 +458,7 @@ function PersonalTaskSection() {
                           }
                           className="flex-1 bg-green-600 hover:bg-green-700 py-3 rounded-xl font-semibold transition"
                         >
-                          ✓ Complete
+                          Complete
                         </button>
                       )}
 

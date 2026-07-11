@@ -23,8 +23,18 @@ class PersonalTask(db.Model):
         default="pending"
     )
 
+    due_date = db.Column(
+        db.Date,
+        nullable=True
+    )
+
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("user.id"),
         nullable=False
+    )
+
+    priority = db.Column(
+        db.String(20),
+        default="medium"
     )

@@ -1,9 +1,6 @@
+from datetime import datetime
 from flask import Blueprint, request
-
-from flask_jwt_extended import (
-    jwt_required,
-    get_jwt_identity
-)
+from flask_jwt_extended import (jwt_required,get_jwt_identity)
 
 from models.task import Task
 from models.hive_member import HiveMember
@@ -24,7 +21,19 @@ def create_task():
     title = data.get("title")
     description = data.get("description")
     hive_id = data.get("hive_id")
+    due_date = data.get("due_date")
     assigned_to = data.get("assigned_to")
+    priority = data.get(
+        "priority",
+        "medium"
+    )
+
+    if due_date:
+        due_date = datetime.strptime(
+            due_date,
+            "%Y-%m-%d"
+        ).date()
+
 
     if not title or not hive_id:
         return {
@@ -50,6 +59,8 @@ def create_task():
         description=description,
         hive_id=hive_id,
         created_by=current_user_id,
+        due_date=due_date,
+        priority=priority,
         assigned_to=assigned_to
     )
 
@@ -104,7 +115,13 @@ def get_tasks(hive_id):
             "title": task.title,
             "description": task.description,
             "status": task.status,
-            "assigned_to": assigned_user
+            "assigned_to": assigned_user,
+            "priority": task.priority,
+            "due_date": (
+                task.due_date.isoformat()
+                if task.due_date
+                else None
+            )
         })
 
     return result, 200
@@ -211,6 +228,16 @@ def update_task(task_id):
 
     data = request.get_json()
 
+    due_date = data.get("due_date")
+
+    if due_date:
+        task.due_date = datetime.strptime(
+            due_date,
+            "%Y-%m-%d"
+        ).date()
+    else:
+        task.due_date = None
+
     task.title = data.get(
         "title",
         task.title
@@ -224,6 +251,11 @@ def update_task(task_id):
     task.assigned_to = data.get(
         "assigned_to",
         task.assigned_to
+    )
+
+    task.priority = data.get(
+        "priority",
+        task.priority
     )
 
     db.session.commit()

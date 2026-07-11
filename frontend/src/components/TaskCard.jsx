@@ -15,6 +15,8 @@ function TaskCard({
   handleUpdateTask,
   startEditing,
   setEditingTaskId,
+  editPriority,
+  setEditPriority,
 })
  {
   const formattedDueDate = task.due_date
@@ -91,6 +93,30 @@ function TaskCard({
             className="w-full rounded-xl bg-slate-700 border border-slate-600 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
           />
 
+          <label className="block text-sm text-slate-400 mb-2">
+            Priority
+          </label>
+
+          <select
+            value={editPriority}
+            onChange={(e) =>
+              setEditPriority(e.target.value)
+            }
+            className="w-full rounded-xl bg-slate-700 border border-slate-600 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
+          >
+            <option value="low">
+              🟢 Low
+            </option>
+
+            <option value="medium">
+              🟡 Medium
+            </option>
+
+            <option value="high">
+              🔴 High
+            </option>
+          </select>
+
           <div className="flex gap-3">
             <button
               onClick={handleUpdateTask}
@@ -136,15 +162,33 @@ function TaskCard({
 
             <div>
               <span className="text-slate-400">
-                Assigned to:
+                Priority:
               </span>
 
-              <span className="ml-2 font-semibold text-violet-400">
-                {task.assigned_to
-                  ? task.assigned_to.username
-                  : "Unassigned"}
+              <span
+                className={`ml-2 px-2 py-1 rounded-full text-sm font-semibold ${
+                  task.priority === "high"
+                    ? "bg-red-500/20 text-red-400"
+                    : task.priority === "medium"
+                    ? "bg-yellow-500/20 text-yellow-400"
+                    : "bg-green-500/20 text-green-400"
+                }`}
+              >
+                {task.priority}
               </span>
             </div>
+
+<div>
+  <span className="text-slate-400">
+    Assigned to:
+  </span>
+
+  <span className="ml-2 font-semibold text-violet-400">
+    {task.assigned_to
+      ? task.assigned_to.username
+      : "Unassigned"}
+  </span>
+</div>
 
             {formattedDueDate && (
               <div>
@@ -165,7 +209,7 @@ function TaskCard({
                 onClick={() => handleCompleteTask(task.id)}
                 className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-medium transition"
               >
-                ✓ Complete
+                Complete
               </button>
             )}
 
