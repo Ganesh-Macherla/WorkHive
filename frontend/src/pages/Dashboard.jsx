@@ -20,6 +20,7 @@ function Dashboard() {
   const [teamCompleted, setTeamCompleted] = useState(0);
 
   const [roomCode, setRoomCode] = useState("");
+  const [hiveSearch, setHiveSearch] = useState("");
 
   const username = localStorage.getItem("username");
 
@@ -155,6 +156,8 @@ function Dashboard() {
         <HiveSection
           hives={hives}
           navigate={navigate}
+          hiveSearch={hiveSearch}
+          setHiveSearch={setHiveSearch}
         />
 
         <PersonalTaskSection />

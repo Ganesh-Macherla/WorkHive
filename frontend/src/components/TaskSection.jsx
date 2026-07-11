@@ -5,6 +5,8 @@ function TaskSection({
   members,
   filter,
   setFilter,
+  searchQuery,
+  setSearchQuery,
   editingTaskId,
   editTitle,
   editDescription,
@@ -18,6 +20,13 @@ function TaskSection({
   startEditing,
   setEditingTaskId,
 }) {
+  const filterLabels = {
+    all: "All",
+    pending: "Pending",
+    completed: "Completed",
+    mine: "Assigned To Me",
+  };
+
   return (
     <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-xl">
 
@@ -33,57 +42,6 @@ function TaskSection({
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
-
-          <button
-            onClick={() => setFilter("all")}
-            className={`px-4 py-2 rounded-xl transition ${
-              filter === "all"
-                ? "bg-violet-600"
-                : "bg-slate-800 hover:bg-slate-700"
-            }`}
-          >
-            All
-          </button>
-
-          <button
-            onClick={() => setFilter("pending")}
-            className={`px-4 py-2 rounded-xl transition ${
-              filter === "pending"
-                ? "bg-yellow-600"
-                : "bg-slate-800 hover:bg-slate-700"
-            }`}
-          >
-            Pending
-          </button>
-
-          <button
-            onClick={() => setFilter("completed")}
-            className={`px-4 py-2 rounded-xl transition ${
-              filter === "completed"
-                ? "bg-green-600"
-                : "bg-slate-800 hover:bg-slate-700"
-            }`}
-          >
-            Completed
-          </button>
-
-          <button
-            onClick={() => setFilter("mine")}
-            className={`px-4 py-2 rounded-xl transition ${
-              filter === "mine"
-                ? "bg-blue-600"
-                : "bg-slate-800 hover:bg-slate-700"
-            }`}
-          >
-            Assigned To Me
-          </button>
-
-        </div>
-
-      </div>
-
-      <div className="flex justify-end mb-8">
         <div className="bg-slate-800 px-4 py-2 rounded-xl">
           <span className="text-slate-400">
             Showing
@@ -92,7 +50,81 @@ function TaskSection({
           <span className="ml-2 font-bold text-violet-400">
             {tasks.length}
           </span>
+
+          <span className="ml-2 text-slate-400">
+            • {filterLabels[filter]}
+          </span>
         </div>
+
+      </div>
+
+      <div className="relative mb-6">
+
+        <input
+          type="text"
+          placeholder="🔍 Search tasks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 pr-12 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+        />
+
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery("")}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
+          >
+            ✕
+          </button>
+        )}
+
+      </div>
+
+      <div className="flex flex-wrap gap-3 mb-8">
+
+        <button
+          onClick={() => setFilter("all")}
+          className={`px-4 py-2 rounded-xl transition ${
+            filter === "all"
+              ? "bg-violet-600"
+              : "bg-slate-800 hover:bg-slate-700"
+          }`}
+        >
+          All
+        </button>
+
+        <button
+          onClick={() => setFilter("pending")}
+          className={`px-4 py-2 rounded-xl transition ${
+            filter === "pending"
+              ? "bg-yellow-600"
+              : "bg-slate-800 hover:bg-slate-700"
+          }`}
+        >
+          Pending
+        </button>
+
+        <button
+          onClick={() => setFilter("completed")}
+          className={`px-4 py-2 rounded-xl transition ${
+            filter === "completed"
+              ? "bg-green-600"
+              : "bg-slate-800 hover:bg-slate-700"
+          }`}
+        >
+          Completed
+        </button>
+
+        <button
+          onClick={() => setFilter("mine")}
+          className={`px-4 py-2 rounded-xl transition ${
+            filter === "mine"
+              ? "bg-blue-600"
+              : "bg-slate-800 hover:bg-slate-700"
+          }`}
+        >
+          Assigned To Me
+        </button>
+
       </div>
 
       {tasks.length === 0 ? (
@@ -107,7 +139,7 @@ function TaskSection({
           </h3>
 
           <p className="text-slate-400">
-            Try changing the filter or create a new task.
+            Try changing the filter or search.
           </p>
 
         </div>

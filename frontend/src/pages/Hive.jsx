@@ -16,6 +16,7 @@ function Hive() {
   const [tasks, setTasks] = useState([]);
 
   const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const currentUsername = localStorage.getItem("username");
 
   const [members, setMembers] = useState([]);
@@ -245,6 +246,23 @@ function Hive() {
   }
 
   const filteredTasks = tasks.filter((task) => {
+    const matchesSearch =
+      task.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+
+      (task.description || "")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+
+      (task.assigned_to?.username || "")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+    if (!matchesSearch) {
+      return false;
+    }
+
     if (filter === "pending") {
       return task.status === "pending";
     }
@@ -310,6 +328,8 @@ function Hive() {
           setEditAssignedTo={setEditAssignedTo}
           handleUpdateTask={handleUpdateTask}
           setEditingTaskId={setEditingTaskId}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
         />
       </div>
     </div>
