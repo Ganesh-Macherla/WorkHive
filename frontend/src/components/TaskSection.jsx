@@ -2,11 +2,14 @@ import TaskCard from "./TaskCard";
 
 function TaskSection({
   tasks,
+  members,
   editingTaskId,
   editTitle,
   editDescription,
+  editAssignedTo,
   setEditTitle,
   setEditDescription,
+  setEditAssignedTo,
   handleCompleteTask,
   handleDeleteTask,
   handleUpdateTask,
@@ -15,7 +18,6 @@ function TaskSection({
 }) {
   return (
     <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-xl">
-
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-3xl font-bold">
@@ -58,11 +60,14 @@ function TaskSection({
             <TaskCard
               key={task.id}
               task={task}
+              members={members}
               editingTaskId={editingTaskId}
               editTitle={editTitle}
               editDescription={editDescription}
+              editAssignedTo={editAssignedTo}
               setEditTitle={setEditTitle}
               setEditDescription={setEditDescription}
+              setEditAssignedTo={setEditAssignedTo}
               handleCompleteTask={handleCompleteTask}
               handleDeleteTask={handleDeleteTask}
               handleUpdateTask={handleUpdateTask}

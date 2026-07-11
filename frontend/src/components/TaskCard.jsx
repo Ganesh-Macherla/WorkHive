@@ -1,8 +1,11 @@
 function TaskCard({
   task,
+  members,
   editingTaskId,
   editTitle,
   editDescription,
+  editAssignedTo,
+  setEditAssignedTo,
   setEditTitle,
   setEditDescription,
   handleCompleteTask,
@@ -39,6 +42,29 @@ function TaskCard({
             onChange={(e) => setEditDescription(e.target.value)}
             className="w-full rounded-xl bg-slate-700 border border-slate-600 px-4 py-3 text-white resize-none focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
           />
+
+          <label className="block text-sm text-slate-400 mb-2">
+            Assign To
+          </label>
+
+          <select
+            value={editAssignedTo}
+            onChange={(e) => setEditAssignedTo(e.target.value)}
+            className="w-full rounded-xl bg-slate-700 border border-slate-600 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
+          >
+            <option value="">
+              Unassigned
+            </option>
+
+            {members.map((member) => (
+              <option
+                key={member.id}
+                value={member.id}
+              >
+                {member.username} ({member.role})
+              </option>
+            ))}
+          </select>
 
           <div className="flex gap-3">
             <button

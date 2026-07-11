@@ -21,6 +21,7 @@ function Hive() {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [editAssignedTo, setEditAssignedTo] = useState("");
 
   const fetchTasks = async () => {
     try {
@@ -146,8 +147,15 @@ function Hive() {
 
   const startEditing = (task) => {
     setEditingTaskId(task.id);
+
     setEditTitle(task.title);
     setEditDescription(task.description || "");
+
+    setEditAssignedTo(
+      task.assigned_to
+        ? task.assigned_to.id
+        : ""
+    );
   };
 
   const handleUpdateTask = async () => {
@@ -159,6 +167,7 @@ function Hive() {
         {
           title: editTitle,
           description: editDescription,
+          assigned_to: editAssignedTo || null,
         },
         {
           headers: {
@@ -170,6 +179,7 @@ function Hive() {
       setEditingTaskId(null);
       setEditTitle("");
       setEditDescription("");
+      setEditAssignedTo("");
 
       fetchTasks();
     } catch (error) {
@@ -214,14 +224,17 @@ function Hive() {
       <div className="mt-8">
         <TaskSection
           tasks={tasks}
+          members={members}
           handleCompleteTask={handleCompleteTask}
           handleDeleteTask={handleDeleteTask}
           startEditing={startEditing}
           editingTaskId={editingTaskId}
           editTitle={editTitle}
           editDescription={editDescription}
+          editAssignedTo={editAssignedTo}
           setEditTitle={setEditTitle}
           setEditDescription={setEditDescription}
+          setEditAssignedTo={setEditAssignedTo}
           handleUpdateTask={handleUpdateTask}
           setEditingTaskId={setEditingTaskId}
         />
