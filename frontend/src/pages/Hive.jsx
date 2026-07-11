@@ -16,6 +16,7 @@ function Hive() {
   const [tasks, setTasks] = useState([]);
 
   const [filter, setFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
   const currentUsername = localStorage.getItem("username");
 
@@ -326,7 +327,8 @@ function Hive() {
     );
   }
 
-  const filteredTasks = tasks.filter((task) => {
+  const filteredTasks = tasks
+    .filter((task) => {
     const matchesSearch =
       task.title
         .toLowerCase()
@@ -370,9 +372,35 @@ function Hive() {
     }
 
     return true;
-  });
+    })
+    .sort((a, b) => {
+      if (sortBy === "priority") {
+        const priorityOrder = {
+          high: 3,
+          medium: 2,
+          low: 1,
+        };
 
-  return (
+        return (
+          priorityOrder[b.priority] -
+          priorityOrder[a.priority]
+        );
+      }
+
+      if (sortBy === "dueDate") {
+        if (!a.due_date) return 1;
+        if (!b.due_date) return -1;
+
+        return (
+          new Date(a.due_date) -
+          new Date(b.due_date)
+        );
+      }
+
+      return b.id - a.id;
+    });
+
+    return (
     <div className="min-h-screen bg-slate-950 text-white p-10">
       <HiveHeader
         hive={hive}
@@ -429,6 +457,8 @@ function Hive() {
           setSearchQuery={setSearchQuery}
           editPriority={editPriority}
           setEditPriority={setEditPriority}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
         />
       </div>
     </div>

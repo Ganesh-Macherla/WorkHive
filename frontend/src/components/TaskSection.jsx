@@ -25,12 +25,20 @@ function TaskSection({
   handleUpdateTask,
   startEditing,
   setEditingTaskId,
+  sortBy,
+  setSortBy,
 }) {
   const filterLabels = {
     all: "All",
     pending: "Pending",
     completed: "Completed",
     mine: "Assigned To Me",
+  };
+
+  const sortLabels = {
+    newest: "Newest",
+    dueDate: "Due Date",
+    priority: "Priority",
   };
 
   return (
@@ -85,51 +93,51 @@ function TaskSection({
 
       </div>
 
-      <div className="flex flex-wrap gap-3 mb-8">
+      <div className="flex flex-wrap gap-4 mb-8">
 
-        <button
-          onClick={() => setFilter("all")}
-          className={`px-4 py-2 rounded-xl transition ${
-            filter === "all"
-              ? "bg-violet-600"
-              : "bg-slate-800 hover:bg-slate-700"
-          }`}
+        <select
+          value={filter}
+          onChange={(e) =>
+            setFilter(e.target.value)
+          }
+          className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3"
         >
-          All
-        </button>
+          <option value="all">
+            All Tasks
+          </option>
 
-        <button
-          onClick={() => setFilter("pending")}
-          className={`px-4 py-2 rounded-xl transition ${
-            filter === "pending"
-              ? "bg-yellow-600"
-              : "bg-slate-800 hover:bg-slate-700"
-          }`}
-        >
-          Pending
-        </button>
+          <option value="pending">
+            Pending
+          </option>
 
-        <button
-          onClick={() => setFilter("completed")}
-          className={`px-4 py-2 rounded-xl transition ${
-            filter === "completed"
-              ? "bg-green-600"
-              : "bg-slate-800 hover:bg-slate-700"
-          }`}
-        >
-          Completed
-        </button>
+          <option value="completed">
+            Completed
+          </option>
 
-        <button
-          onClick={() => setFilter("mine")}
-          className={`px-4 py-2 rounded-xl transition ${
-            filter === "mine"
-              ? "bg-blue-600"
-              : "bg-slate-800 hover:bg-slate-700"
-          }`}
+          <option value="mine">
+            Assigned To Me
+          </option>
+        </select>
+
+        <select
+          value={sortBy}
+          onChange={(e) =>
+            setSortBy(e.target.value)
+          }
+          className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3"
         >
-          Assigned To Me
-        </button>
+          <option value="newest">
+            Newest
+          </option>
+
+          <option value="dueDate">
+            Due Date
+          </option>
+
+          <option value="priority">
+            Priority
+          </option>
+        </select>
 
       </div>
 
