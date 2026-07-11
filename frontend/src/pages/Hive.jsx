@@ -11,8 +11,12 @@ function Hive() {
   const { id } = useParams();
 
   const [hive, setHive] = useState(null);
+
   const [tasks, setTasks] = useState([]);
   const [members, setMembers] = useState([]);
+
+  const [completedCount, setCompletedCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -34,10 +38,20 @@ function Hive() {
       });
 
       setTasks(response.data);
-    } catch (error) {
-      console.log(error.response);
-    }
-  };
+
+      const completed = response.data.filter(
+        (task) => task.status === "completed"
+      ).length;
+
+      setCompletedCount(completed);
+
+      setPendingCount(
+        response.data.length - completed
+      );
+          } catch (error) {
+            console.log(error.response);
+          }
+        };
 
   const fetchMembers = async () => {
     try {
@@ -200,6 +214,9 @@ function Hive() {
       <HiveHeader
         hive={hive}
         taskCount={tasks.length}
+        memberCount={members.length}
+        completedCount={completedCount}
+        pendingCount={pendingCount}
       />
 
       {/* Create Task + Members */}

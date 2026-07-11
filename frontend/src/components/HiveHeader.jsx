@@ -1,70 +1,87 @@
-import { useNavigate } from "react-router-dom";
-
-function HiveHeader({ hive, taskCount }) {
-  const navigate = useNavigate();
-
+function HiveHeader({
+  hive,
+  taskCount,
+  memberCount,
+  completedCount,
+  pendingCount,
+}) {
   return (
-    <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-xl mb-8">
-
-      <button
-        onClick={() => navigate("/dashboard")}
-        className="text-violet-400 hover:text-violet-300 font-medium mb-6 transition"
-      >
-        ← Back to Dashboard
-      </button>
-
+    <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-xl">
       <h1 className="text-4xl font-bold">
         {hive.name}
       </h1>
 
-      <p className="text-slate-400 mt-2">
+      <p className="text-slate-400 mt-3">
         Collaborative workspace
       </p>
 
-      <div className="grid md:grid-cols-4 gap-5 mt-8">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 mt-8">
 
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div>
           <p className="text-sm text-slate-500">
             Room Code
           </p>
 
-          <p className="mt-2 font-mono text-lg text-violet-400 font-semibold">
+          <p className="font-mono text-lg text-violet-400 font-semibold mt-1">
             {hive.room_code}
           </p>
         </div>
 
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div>
           <p className="text-sm text-slate-500">
             Hive ID
           </p>
 
-          <p className="mt-2 text-lg font-semibold">
+          <p className="text-lg font-semibold mt-1">
             #{hive.id}
           </p>
         </div>
 
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
-          <p className="text-sm text-slate-500">
-            Total Tasks
-          </p>
-
-          <p className="mt-2 text-lg font-semibold text-violet-400">
-            {taskCount}
-          </p>
-        </div>
-
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div>
           <p className="text-sm text-slate-500">
             Members
           </p>
 
-          <p className="mt-2 text-lg font-semibold text-slate-300">
-            Coming Soon
+          <p className="text-lg font-semibold mt-1">
+            {memberCount}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-sm text-slate-500">
+            Completed
+          </p>
+
+          <p className="text-lg font-semibold text-green-400 mt-1">
+            {completedCount}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-sm text-slate-500">
+            Pending
+          </p>
+
+          <p className="text-lg font-semibold text-yellow-400 mt-1">
+            {pendingCount}
           </p>
         </div>
 
       </div>
 
+      <div className="mt-8 pt-6 border-t border-slate-800">
+        <div className="flex items-center justify-between">
+
+          <span className="text-slate-400">
+            Total Tasks
+          </span>
+
+          <span className="text-2xl font-bold text-violet-400">
+            {taskCount}
+          </span>
+
+        </div>
+      </div>
     </div>
   );
 }
