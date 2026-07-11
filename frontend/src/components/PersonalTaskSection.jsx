@@ -505,19 +505,85 @@ function PersonalTaskSection() {
       ) : (
         <div className="space-y-6">
           {filteredTasks.map((task) => {
-            const formattedDueDate =
-              task.due_date
-                ? new Date(
-                    task.due_date
-                  ).toLocaleDateString(
-                    "en-IN",
-                    {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    }
-                  )
-                : null;
+            const today = new Date();
+
+            today.setHours(
+              0,
+              0,
+              0,
+              0
+            );
+
+            const tomorrow = new Date(today);
+
+            tomorrow.setDate(
+              tomorrow.getDate() + 1
+            );
+
+            const taskDate = task.due_date
+              ? new Date(task.due_date)
+              : null;
+
+            if (taskDate) {
+              taskDate.setHours(
+                0,
+                0,
+                0,
+                0
+              );
+            }
+
+            const formattedDueDate = taskDate
+              ? taskDate.toLocaleDateString(
+                  "en-IN",
+                  {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }
+                )
+              : null;
+
+            let displayStatus = task.status;
+
+            let dueDateColor =
+              "text-green-400";
+
+            if (
+              task.status !== "completed" &&
+              taskDate
+            ) {
+
+              if (taskDate < today) {
+
+                displayStatus = "overdue";
+
+                dueDateColor =
+                  "text-red-400";
+
+              } else if (
+                taskDate.getTime() ===
+                today.getTime()
+              ) {
+
+                displayStatus =
+                  "due today";
+
+                dueDateColor =
+                  "text-orange-400";
+
+              } else if (
+                taskDate.getTime() ===
+                tomorrow.getTime()
+              ) {
+
+                displayStatus =
+                  "due tomorrow";
+
+                dueDateColor =
+                  "text-yellow-400";
+              }
+            }
 
             return (
               <div
@@ -624,13 +690,19 @@ function PersonalTaskSection() {
                             </span>
 
                             <span
-                              className={`ml-2 font-semibold ${
-                                task.status === "completed"
-                                  ? "text-green-400"
-                                  : "text-yellow-400"
+                              className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                                displayStatus === "completed"
+                                  ? "bg-green-500/20 text-green-400"
+                                  : displayStatus === "overdue"
+                                  ? "bg-red-500/20 text-red-400"
+                                  : displayStatus === "due today"
+                                  ? "bg-orange-500/20 text-orange-400"
+                                  : displayStatus === "due tomorrow"
+                                  ? "bg-yellow-500/20 text-yellow-400"
+                                  : "bg-yellow-500/20 text-yellow-400"
                               }`}
                             >
-                              {task.status}
+                              {displayStatus}
                             </span>
                           </div>
 
@@ -658,7 +730,7 @@ function PersonalTaskSection() {
                                 Due:
                               </span>
 
-                              <span className="ml-2 font-semibold text-red-400">
+                              <span className={`ml-2 font-semibold ${dueDateColor}`}>
                                 {formattedDueDate}
                               </span>
                             </div>
