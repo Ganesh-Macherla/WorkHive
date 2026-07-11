@@ -33,6 +33,9 @@ function TaskSection({
     pending: "Pending",
     completed: "Completed",
     mine: "Assigned To Me",
+    overdue: "Overdue",
+    today: "Due Today",
+    tomorrow: "Due Tomorrow",
   };
 
   const sortLabels = {
@@ -116,6 +119,18 @@ function TaskSection({
 
           <option value="mine">
             Assigned To Me
+          </option>
+
+          <option value="overdue">
+            Overdue
+          </option>
+
+          <option value="today">
+            Due Today
+          </option>
+
+          <option value="tomorrow">
+            Due Tomorrow
           </option>
         </select>
 

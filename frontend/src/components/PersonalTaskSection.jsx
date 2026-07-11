@@ -19,6 +19,15 @@ function PersonalTaskSection() {
   const [editPriority, setEditPriority] =
     useState("medium");
 
+  const [filter, setFilter] =
+    useState("all");
+
+  const [sortBy, setSortBy] =
+    useState("newest");
+
+  const [searchQuery, setSearchQuery] =
+    useState("");
+
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -216,6 +225,116 @@ function PersonalTaskSection() {
     }
   };
 
+  const filteredTasks = tasks
+  .filter((task) => {
+    const matchesSearch =
+      task.title
+        .toLowerCase()
+        .includes(
+          searchQuery.toLowerCase()
+        ) ||
+      (task.description || "")
+        .toLowerCase()
+        .includes(
+          searchQuery.toLowerCase()
+        );
+
+    if (!matchesSearch) {
+      return false;
+    }
+
+    const today = new Date();
+
+    today.setHours(
+      0,
+      0,
+      0,
+      0
+    );
+
+    const tomorrow = new Date(today);
+
+    tomorrow.setDate(
+      tomorrow.getDate() + 1
+    );
+
+    const taskDate = task.due_date
+      ? new Date(task.due_date)
+      : null;
+
+    if (taskDate) {
+      taskDate.setHours(
+        0,
+        0,
+        0,
+        0
+      );
+    }
+
+    if (filter === "pending") {
+      return task.status === "pending";
+    }
+
+    if (filter === "completed") {
+      return task.status === "completed";
+    }
+
+    if (filter === "overdue") {
+      return (
+        task.status !== "completed" &&
+        taskDate &&
+        taskDate < today
+      );
+    }
+
+    if (filter === "today") {
+      return (
+        task.status !== "completed" &&
+        taskDate &&
+        taskDate.getTime() ===
+          today.getTime()
+      );
+    }
+
+    if (filter === "tomorrow") {
+      return (
+        task.status !== "completed" &&
+        taskDate &&
+        taskDate.getTime() ===
+          tomorrow.getTime()
+      );
+    }
+
+    return true;
+  })
+  .sort((a, b) => {
+    if (sortBy === "priority") {
+      const priorityOrder = {
+        high: 3,
+        medium: 2,
+        low: 1,
+      };
+
+      return (
+        priorityOrder[b.priority] -
+        priorityOrder[a.priority]
+      );
+    }
+
+    if (sortBy === "dueDate") {
+      if (!a.due_date) return 1;
+
+      if (!b.due_date) return -1;
+
+      return (
+        new Date(a.due_date) -
+        new Date(b.due_date)
+      );
+    }
+
+    return b.id - a.id;
+  });
+
   return (
     <div className="bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-800">
       <div className="mb-6">
@@ -293,14 +412,99 @@ function PersonalTaskSection() {
       </button>
 
       <div className="my-8 border-t border-slate-800"></div>
+      
+      <div className="space-y-4 mb-8">
 
-      {tasks.length === 0 ? (
+        <div className="relative">
+
+          <input
+            type="text"
+            placeholder="🔍 Search tasks..."
+            value={searchQuery}
+            onChange={(e) =>
+              setSearchQuery(e.target.value)
+            }
+            className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 pr-12 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+          />
+
+          {searchQuery && (
+            <button
+              onClick={() =>
+                setSearchQuery("")
+              }
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+            >
+              ✕
+            </button>
+          )}
+
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+
+          <select
+            value={filter}
+            onChange={(e) =>
+              setFilter(e.target.value)
+            }
+            className="rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white"
+          >
+            <option value="all">
+              All Tasks
+            </option>
+
+            <option value="pending">
+              Pending
+            </option>
+
+            <option value="completed">
+              Completed
+            </option>
+
+            <option value="overdue">
+              Overdue
+            </option>
+
+            <option value="today">
+              Due Today
+            </option>
+
+            <option value="tomorrow">
+              Due Tomorrow
+            </option>
+          </select>
+
+          <select
+            value={sortBy}
+            onChange={(e) =>
+              setSortBy(e.target.value)
+            }
+            className="rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white"
+          >
+            <option value="newest">
+              Newest First
+            </option>
+
+            <option value="dueDate">
+              Due Date
+            </option>
+
+            <option value="priority">
+              Priority
+            </option>
+          </select>
+
+        </div>
+
+      </div>
+      
+      {filteredTasks.length === 0 ? (
         <div className="text-center py-10 text-slate-400">
           No personal tasks yet.
         </div>
       ) : (
         <div className="space-y-6">
-          {tasks.map((task) => {
+          {filteredTasks.map((task) => {
             const formattedDueDate =
               task.due_date
                 ? new Date(

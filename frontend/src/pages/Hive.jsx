@@ -329,76 +329,133 @@ function Hive() {
 
   const filteredTasks = tasks
     .filter((task) => {
-    const matchesSearch =
-      task.title
-        .toLowerCase()
-        .includes(
-          searchQuery.toLowerCase()
-        ) ||
-      (task.description || "")
-        .toLowerCase()
-        .includes(
-          searchQuery.toLowerCase()
-        ) ||
-      (task.assigned_to?.username || "")
-        .toLowerCase()
-        .includes(
-          searchQuery.toLowerCase()
-        );
+      const matchesSearch =
+        task.title
+          .toLowerCase()
+          .includes(
+            searchQuery.toLowerCase()
+          ) ||
+        (task.description || "")
+          .toLowerCase()
+          .includes(
+            searchQuery.toLowerCase()
+          ) ||
+        (task.assigned_to?.username || "")
+          .toLowerCase()
+          .includes(
+            searchQuery.toLowerCase()
+          );
 
-    if (!matchesSearch) {
-      return false;
-    }
+      if (!matchesSearch) {
+        return false;
+      }
 
-    if (filter === "pending") {
-      return (
-        task.status === "pending"
+      const today = new Date();
+
+      today.setHours(
+        0,
+        0,
+        0,
+        0
       );
-    }
 
-    if (filter === "completed") {
-      return (
-        task.status === "completed"
+      const tomorrow = new Date(today);
+
+      tomorrow.setDate(
+        tomorrow.getDate() + 1
       );
-    }
 
-    if (filter === "mine") {
-      return (
-        task.assigned_to &&
-        task.assigned_to
-          .username ===
-          currentUsername
-      );
-    }
+      const taskDate = task.due_date
+        ? new Date(task.due_date)
+        : null;
 
-    return true;
-    })
-    .sort((a, b) => {
-      if (sortBy === "priority") {
-        const priorityOrder = {
-          high: 3,
-          medium: 2,
-          low: 1,
-        };
-
-        return (
-          priorityOrder[b.priority] -
-          priorityOrder[a.priority]
+      if (taskDate) {
+        taskDate.setHours(
+          0,
+          0,
+          0,
+          0
         );
       }
 
-      if (sortBy === "dueDate") {
-        if (!a.due_date) return 1;
-        if (!b.due_date) return -1;
-
+      if (filter === "pending") {
         return (
-          new Date(a.due_date) -
-          new Date(b.due_date)
+          task.status === "pending"
         );
       }
 
-      return b.id - a.id;
-    });
+      if (filter === "completed") {
+        return (
+          task.status === "completed"
+        );
+      }
+
+      if (filter === "mine") {
+        return (
+          task.assigned_to &&
+          task.assigned_to
+            .username ===
+            currentUsername
+        );
+      }
+
+      if (filter === "overdue") {
+        return (
+          task.status !==
+            "completed" &&
+          taskDate &&
+          taskDate < today
+        );
+      }
+
+      if (filter === "today") {
+        return (
+          task.status !==
+            "completed" &&
+          taskDate &&
+          taskDate.getTime() ===
+            today.getTime()
+        );
+      }
+
+      if (filter === "tomorrow") {
+        return (
+          task.status !==
+            "completed" &&
+          taskDate &&
+          taskDate.getTime() ===
+            tomorrow.getTime()
+        );
+      }
+
+      return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === "priority") {
+          const priorityOrder = {
+            high: 3,
+            medium: 2,
+            low: 1,
+          };
+
+          return (
+            priorityOrder[b.priority] -
+            priorityOrder[a.priority]
+          );
+        }
+
+        if (sortBy === "dueDate") {
+          if (!a.due_date) return 1;
+          if (!b.due_date) return -1;
+
+          return (
+            new Date(a.due_date) -
+            new Date(b.due_date)
+          );
+        }
+
+        return b.id - a.id;
+      });
 
     return (
     <div className="min-h-screen bg-slate-950 text-white p-10">
