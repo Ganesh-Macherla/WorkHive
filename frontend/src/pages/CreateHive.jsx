@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
@@ -23,6 +24,8 @@ function Hive() {
         },
       }
     );
+
+    toast.success(`Created hive "${name}"`);
 
     navigate(`/hive/${response.data.id}`);
   } catch (error) {

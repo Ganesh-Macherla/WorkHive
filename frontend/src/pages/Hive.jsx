@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
@@ -13,6 +14,10 @@ function Hive() {
   const [hive, setHive] = useState(null);
 
   const [tasks, setTasks] = useState([]);
+
+  const [filter, setFilter] = useState("all");
+  const currentUsername = localStorage.getItem("username");
+
   const [members, setMembers] = useState([]);
 
   const [completedCount, setCompletedCount] = useState(0);
@@ -117,16 +122,27 @@ function Hive() {
       setDescription("");
       setAssignedTo("");
 
+      const member = members.find(
+        (member) =>
+          member.id === Number(assignedTo)
+      );
+
+      if (member) {
+        toast.success(`Assigned "${title}" to ${member.username}`);
+      } else {
+        toast.success(`Created task "${title}"`);
+      }
+
       fetchTasks();
     } catch (error) {
       console.log(error.response);
     }
   };
-
+  
   const handleCompleteTask = async (taskId) => {
     try {
       const token = localStorage.getItem("token");
-
+      const task = tasks.find((task) => task.id === taskId);
       await api.patch(
         `/tasks/${taskId}/complete`,
         {},
@@ -137,6 +153,7 @@ function Hive() {
         }
       );
 
+      toast.success(`Completed task "${task.title}"`);
       fetchTasks();
     } catch (error) {
       console.log(error.response);
@@ -146,13 +163,14 @@ function Hive() {
   const handleDeleteTask = async (taskId) => {
     try {
       const token = localStorage.getItem("token");
-
+      const task = tasks.find((task) => task.id === taskId);
       await api.delete(`/tasks/${taskId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      toast.success(`Deleted task "${task.title}"`);
       fetchTasks();
     } catch (error) {
       console.log(error.response);
@@ -175,7 +193,14 @@ function Hive() {
   const handleUpdateTask = async () => {
     try {
       const token = localStorage.getItem("token");
+      const oldTask = tasks.find((task) => task.id === editingTaskId);
 
+  const oldAssignedId = oldTask?.assigned_to?.id;
+
+  const member = members.find(
+    (member) =>
+      member.id === Number(editAssignedTo)
+  );
       await api.put(
         `/tasks/${editingTaskId}`,
         {
@@ -195,6 +220,16 @@ function Hive() {
       setEditDescription("");
       setEditAssignedTo("");
 
+      if (oldAssignedId !== Number(editAssignedTo)) {
+        if (member) {
+        toast.success(`Reassigned "${editTitle}" to ${member.username}`);
+        } else {
+          toast.success(`Unassigned "${editTitle}"`);
+        }
+      } else {
+        toast.success(`Updated task "${editTitle}"`);
+      }
+
       fetchTasks();
     } catch (error) {
       console.log(error.response);
@@ -208,6 +243,25 @@ function Hive() {
       </div>
     );
   }
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "pending") {
+      return task.status === "pending";
+    }
+
+    if (filter === "completed") {
+      return task.status === "completed";
+    }
+
+    if (filter === "mine") {
+      return (
+        task.assigned_to &&
+        task.assigned_to.username === currentUsername
+      );
+    }
+
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-10">
@@ -240,7 +294,9 @@ function Hive() {
       {/* Tasks */}
       <div className="mt-8">
         <TaskSection
-          tasks={tasks}
+          tasks={filteredTasks}
+          filter={filter}
+          setFilter={setFilter}
           members={members}
           handleCompleteTask={handleCompleteTask}
           handleDeleteTask={handleDeleteTask}

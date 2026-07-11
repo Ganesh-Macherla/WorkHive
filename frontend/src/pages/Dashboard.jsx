@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../services/api";
@@ -111,6 +112,7 @@ function Dashboard() {
       );
 
       setRoomCode("");
+      toast.success(`Joined hive "${roomCode}"`);
 
       await fetchHives();
     } catch (error) {

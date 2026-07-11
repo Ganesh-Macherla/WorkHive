@@ -3,6 +3,8 @@ import TaskCard from "./TaskCard";
 function TaskSection({
   tasks,
   members,
+  filter,
+  setFilter,
   editingTaskId,
   editTitle,
   editDescription,
@@ -18,7 +20,9 @@ function TaskSection({
 }) {
   return (
     <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-xl">
-      <div className="flex items-center justify-between mb-8">
+
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+
         <div>
           <h2 className="text-3xl font-bold">
             Team Tasks
@@ -29,9 +33,60 @@ function TaskSection({
           </p>
         </div>
 
+        <div className="flex flex-wrap gap-3">
+
+          <button
+            onClick={() => setFilter("all")}
+            className={`px-4 py-2 rounded-xl transition ${
+              filter === "all"
+                ? "bg-violet-600"
+                : "bg-slate-800 hover:bg-slate-700"
+            }`}
+          >
+            All
+          </button>
+
+          <button
+            onClick={() => setFilter("pending")}
+            className={`px-4 py-2 rounded-xl transition ${
+              filter === "pending"
+                ? "bg-yellow-600"
+                : "bg-slate-800 hover:bg-slate-700"
+            }`}
+          >
+            Pending
+          </button>
+
+          <button
+            onClick={() => setFilter("completed")}
+            className={`px-4 py-2 rounded-xl transition ${
+              filter === "completed"
+                ? "bg-green-600"
+                : "bg-slate-800 hover:bg-slate-700"
+            }`}
+          >
+            Completed
+          </button>
+
+          <button
+            onClick={() => setFilter("mine")}
+            className={`px-4 py-2 rounded-xl transition ${
+              filter === "mine"
+                ? "bg-blue-600"
+                : "bg-slate-800 hover:bg-slate-700"
+            }`}
+          >
+            Assigned To Me
+          </button>
+
+        </div>
+
+      </div>
+
+      <div className="flex justify-end mb-8">
         <div className="bg-slate-800 px-4 py-2 rounded-xl">
           <span className="text-slate-400">
-            Total
+            Showing
           </span>
 
           <span className="ml-2 font-bold text-violet-400">
@@ -42,20 +97,23 @@ function TaskSection({
 
       {tasks.length === 0 ? (
         <div className="text-center py-16">
+
           <div className="text-5xl mb-4">
             📋
           </div>
 
           <h3 className="text-xl font-semibold mb-2">
-            No tasks yet
+            No matching tasks
           </h3>
 
           <p className="text-slate-400">
-            Create your first team task to get started.
+            Try changing the filter or create a new task.
           </p>
+
         </div>
       ) : (
         <div className="space-y-5">
+
           {tasks.map((task) => (
             <TaskCard
               key={task.id}
@@ -75,8 +133,10 @@ function TaskSection({
               setEditingTaskId={setEditingTaskId}
             />
           ))}
+
         </div>
       )}
+
     </div>
   );
 }

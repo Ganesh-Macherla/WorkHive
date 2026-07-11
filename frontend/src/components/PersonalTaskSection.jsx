@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
@@ -46,6 +47,7 @@ function PersonalTaskSection() {
 
       setTitle("");
       setDescription("");
+      toast.success(`Created personal task "${title}"`);
 
       fetchTasks();
     } catch (error) {
@@ -56,7 +58,7 @@ function PersonalTaskSection() {
   const handleCompleteTask = async (taskId) => {
     try {
       const token = localStorage.getItem("token");
-
+      const task = tasks.find((task) => task.id === taskId);
       await api.patch(
         `/personal-tasks/${taskId}/complete`,
         {},
@@ -67,6 +69,7 @@ function PersonalTaskSection() {
         }
       );
 
+      toast.success(`Completed personal task "${task.title}"`);
       fetchTasks();
     } catch (error) {
       console.log(error.response);
@@ -76,13 +79,14 @@ function PersonalTaskSection() {
   const handleDeleteTask = async (taskId) => {
     try {
       const token = localStorage.getItem("token");
-
+      const task = tasks.find((task) => task.id === taskId);
       await api.delete(`/personal-tasks/${taskId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      toast.success(`Deleted personal task "${task.title}"`);
       fetchTasks();
     } catch (error) {
       console.log(error.response);
