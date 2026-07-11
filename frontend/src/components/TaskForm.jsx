@@ -5,6 +5,8 @@ function TaskForm({
   setDescription,
   assignedTo,
   setAssignedTo,
+  dueDate,
+  setDueDate,
   members,
   handleCreateTask,
 }) {
@@ -66,6 +68,17 @@ function TaskForm({
           </option>
         ))}
       </select>
+
+      <label className="block text-sm text-slate-400 mb-2">
+        Due Date
+      </label>
+
+      <input
+        type="date"
+        value={dueDate}
+        onChange={(e) => setDueDate(e.target.value)}
+        className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
+      />
 
       <button
         onClick={handleCreateTask}

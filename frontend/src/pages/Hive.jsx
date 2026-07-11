@@ -27,11 +27,13 @@ function Hive() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editAssignedTo, setEditAssignedTo] = useState("");
+  const [editDueDate, setEditDueDate] = useState("");
 
   const fetchTasks = async () => {
     try {
@@ -54,10 +56,10 @@ function Hive() {
       setPendingCount(
         response.data.length - completed
       );
-          } catch (error) {
-            console.log(error.response);
-          }
-        };
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
 
   const fetchMembers = async () => {
     try {
@@ -111,6 +113,7 @@ function Hive() {
           description,
           hive_id: id,
           assigned_to: assignedTo || null,
+          due_date: dueDate || null,
         },
         {
           headers: {
@@ -119,19 +122,28 @@ function Hive() {
         }
       );
 
-      setTitle("");
-      setDescription("");
-      setAssignedTo("");
-
       const member = members.find(
         (member) =>
           member.id === Number(assignedTo)
       );
 
+      setTitle("");
+      setDescription("");
+      setAssignedTo("");
+      setDueDate("");
+
       if (member) {
-        toast.success(`Assigned "${title}" to ${member.username}`);
+        toast.success(
+          dueDate
+            ? `Assigned "${title}" to ${member.username} • Due ${dueDate}`
+            : `Assigned "${title}" to ${member.username}`
+        );
       } else {
-        toast.success(`Created task "${title}"`);
+        toast.success(
+          dueDate
+            ? `Created "${title}" • Due ${dueDate}`
+            : `Created task "${title}"`
+        );
       }
 
       fetchTasks();
@@ -139,11 +151,15 @@ function Hive() {
       console.log(error.response);
     }
   };
-  
+
   const handleCompleteTask = async (taskId) => {
     try {
       const token = localStorage.getItem("token");
-      const task = tasks.find((task) => task.id === taskId);
+
+      const task = tasks.find(
+        (task) => task.id === taskId
+      );
+
       await api.patch(
         `/tasks/${taskId}/complete`,
         {},
@@ -154,7 +170,10 @@ function Hive() {
         }
       );
 
-      toast.success(`Completed task "${task.title}"`);
+      toast.success(
+        `Completed task "${task.title}"`
+      );
+
       fetchTasks();
     } catch (error) {
       console.log(error.response);
@@ -164,14 +183,24 @@ function Hive() {
   const handleDeleteTask = async (taskId) => {
     try {
       const token = localStorage.getItem("token");
-      const task = tasks.find((task) => task.id === taskId);
-      await api.delete(`/tasks/${taskId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
-      toast.success(`Deleted task "${task.title}"`);
+      const task = tasks.find(
+        (task) => task.id === taskId
+      );
+
+      await api.delete(
+        `/tasks/${taskId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(
+        `Deleted task "${task.title}"`
+      );
+
       fetchTasks();
     } catch (error) {
       console.log(error.response);
@@ -182,32 +211,53 @@ function Hive() {
     setEditingTaskId(task.id);
 
     setEditTitle(task.title);
-    setEditDescription(task.description || "");
+
+    setEditDescription(
+      task.description || ""
+    );
 
     setEditAssignedTo(
       task.assigned_to
         ? task.assigned_to.id
         : ""
     );
+
+    setEditDueDate(
+      task.due_date || ""
+    );
   };
 
   const handleUpdateTask = async () => {
     try {
       const token = localStorage.getItem("token");
-      const oldTask = tasks.find((task) => task.id === editingTaskId);
 
-  const oldAssignedId = oldTask?.assigned_to?.id;
+      const oldTask = tasks.find(
+        (task) =>
+          task.id === editingTaskId
+      );
 
-  const member = members.find(
-    (member) =>
-      member.id === Number(editAssignedTo)
-  );
+      const oldAssignedId =
+        oldTask?.assigned_to?.id || null;
+
+      const newAssignedId =
+        editAssignedTo
+          ? Number(editAssignedTo)
+          : null;
+
+      const member = members.find(
+        (member) =>
+          member.id === newAssignedId
+      );
+
       await api.put(
         `/tasks/${editingTaskId}`,
         {
           title: editTitle,
           description: editDescription,
-          assigned_to: editAssignedTo || null,
+          assigned_to:
+            editAssignedTo || null,
+          due_date:
+            editDueDate || null,
         },
         {
           headers: {
@@ -220,17 +270,38 @@ function Hive() {
       setEditTitle("");
       setEditDescription("");
       setEditAssignedTo("");
+      setEditDueDate("");
 
-      if (oldAssignedId !== Number(editAssignedTo)) {
+      const oldDueDate = oldTask?.due_date;
+
+      if (
+        oldAssignedId !==
+        newAssignedId
+      ) {
         if (member) {
-        toast.success(`Reassigned "${editTitle}" to ${member.username}`);
+          toast.success(
+            `Reassigned "${editTitle}" to ${member.username}`
+          );
         } else {
-          toast.success(`Unassigned "${editTitle}"`);
+          toast.success(
+            `Unassigned "${editTitle}"`
+          );
+        }
+      } else if (oldDueDate !== editDueDate) {
+        if (editDueDate) {
+          toast.success(
+            `Changed due date of "${editTitle}" to ${editDueDate}`
+          );
+        } else {
+          toast.success(
+            `Removed due date from "${editTitle}"`
+          );
         }
       } else {
-        toast.success(`Updated task "${editTitle}"`);
+        toast.success(
+          `Updated task "${editTitle}"`
+        );
       }
-
       fetchTasks();
     } catch (error) {
       console.log(error.response);
@@ -249,32 +320,42 @@ function Hive() {
     const matchesSearch =
       task.title
         .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-
+        .includes(
+          searchQuery.toLowerCase()
+        ) ||
       (task.description || "")
         .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-
+        .includes(
+          searchQuery.toLowerCase()
+        ) ||
       (task.assigned_to?.username || "")
         .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+        .includes(
+          searchQuery.toLowerCase()
+        );
 
     if (!matchesSearch) {
       return false;
     }
 
     if (filter === "pending") {
-      return task.status === "pending";
+      return (
+        task.status === "pending"
+      );
     }
 
     if (filter === "completed") {
-      return task.status === "completed";
+      return (
+        task.status === "completed"
+      );
     }
 
     if (filter === "mine") {
       return (
         task.assigned_to &&
-        task.assigned_to.username === currentUsername
+        task.assigned_to
+          .username ===
+          currentUsername
       );
     }
 
@@ -291,12 +372,13 @@ function Hive() {
         pendingCount={pendingCount}
       />
 
-      {/* Create Task + Members */}
       <div className="grid lg:grid-cols-3 gap-8 mt-8">
         <div className="lg:col-span-2">
           <TaskForm
             title={title}
             description={description}
+            dueDate={dueDate}
+            setDueDate={setDueDate}
             setTitle={setTitle}
             setDescription={setDescription}
             assignedTo={assignedTo}
@@ -309,13 +391,16 @@ function Hive() {
         <MemberSection hiveId={id} />
       </div>
 
-      {/* Tasks */}
       <div className="mt-8">
         <TaskSection
           tasks={filteredTasks}
           filter={filter}
           setFilter={setFilter}
           members={members}
+          editDueDate={editDueDate}
+          setEditDueDate={setEditDueDate}
+          dueDate={dueDate}
+          setDueDate={setDueDate}
           handleCompleteTask={handleCompleteTask}
           handleDeleteTask={handleDeleteTask}
           startEditing={startEditing}

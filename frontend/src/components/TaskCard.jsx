@@ -5,15 +5,29 @@ function TaskCard({
   editTitle,
   editDescription,
   editAssignedTo,
+  editDueDate,
   setEditAssignedTo,
   setEditTitle,
   setEditDescription,
+  setEditDueDate,
   handleCompleteTask,
   handleDeleteTask,
   handleUpdateTask,
   startEditing,
   setEditingTaskId,
-}) {
+})
+ {
+  const formattedDueDate = task.due_date
+    ? new Date(task.due_date).toLocaleDateString(
+        "en-IN",
+        {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }
+      )
+    : null;
+
   return (
     <div className="bg-slate-800 rounded-xl p-5 border border-slate-700 hover:border-violet-500 hover:shadow-violet-500/10 transition-all">
       {editingTaskId === task.id ? (
@@ -40,7 +54,7 @@ function TaskCard({
             rows={4}
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
-            className="w-full rounded-xl bg-slate-700 border border-slate-600 px-4 py-3 text-white resize-none focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
+            className="w-full rounded-xl bg-slate-700 border border-slate-600 px-4 py-3 text-white resize-none focus:outline-none focus:ring-2 focus:ring-violet-500 mb-5"
           />
 
           <label className="block text-sm text-slate-400 mb-2">
@@ -50,7 +64,7 @@ function TaskCard({
           <select
             value={editAssignedTo}
             onChange={(e) => setEditAssignedTo(e.target.value)}
-            className="w-full rounded-xl bg-slate-700 border border-slate-600 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
+            className="w-full rounded-xl bg-slate-700 border border-slate-600 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-5"
           >
             <option value="">
               Unassigned
@@ -65,6 +79,17 @@ function TaskCard({
               </option>
             ))}
           </select>
+
+          <label className="block text-sm text-slate-400 mb-2">
+            Due Date
+          </label>
+
+          <input
+            type="date"
+            value={editDueDate}
+            onChange={(e) => setEditDueDate(e.target.value)}
+            className="w-full rounded-xl bg-slate-700 border border-slate-600 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-violet-500 mb-6"
+          />
 
           <div className="flex gap-3">
             <button
@@ -120,6 +145,18 @@ function TaskCard({
                   : "Unassigned"}
               </span>
             </div>
+
+            {formattedDueDate && (
+              <div>
+                <span className="text-slate-400">
+                  Due:
+                </span>
+
+                <span className="ml-2 font-semibold text-red-400">
+                  {formattedDueDate}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-3 mt-6">

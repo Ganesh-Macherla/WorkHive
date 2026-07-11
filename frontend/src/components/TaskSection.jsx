@@ -5,6 +5,10 @@ function TaskSection({
   members,
   filter,
   setFilter,
+  dueDate,
+  setDueDate,
+  editDueDate,
+  setEditDueDate,
   searchQuery,
   setSearchQuery,
   editingTaskId,
@@ -151,6 +155,8 @@ function TaskSection({
               key={task.id}
               task={task}
               members={members}
+              editDueDate={editDueDate}
+              setEditDueDate={setEditDueDate}
               editingTaskId={editingTaskId}
               editTitle={editTitle}
               editDescription={editDescription}
