@@ -144,9 +144,9 @@ function HeroCards({
                 Upcoming Deadlines
               </h2>
 
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                <button className="bg-slate-800 hover:bg-slate-700 transition rounded-xl p-5 text-left">
+                <button className="bg-slate-800 hover:bg-slate-700 hover:border-violet-500 border border-slate-700 transition rounded-xl p-5 text-left">
 
                   <div className="text-red-400 text-lg font-semibold">
                     🔴 Overdue
@@ -158,7 +158,7 @@ function HeroCards({
 
                 </button>
 
-                <button className="bg-slate-800 hover:bg-slate-700 transition rounded-xl p-5 text-left">
+                <button className="bg-slate-800 hover:bg-slate-700 hover:border-violet-500 border border-slate-700 transition rounded-xl p-5 text-left">
 
                   <div className="text-orange-400 text-lg font-semibold">
                     🟠 Due Today
@@ -170,7 +170,7 @@ function HeroCards({
 
                 </button>
 
-                <button className="bg-slate-800 hover:bg-slate-700 transition rounded-xl p-5 text-left">
+                <button className="bg-slate-800 hover:bg-slate-700 hover:border-violet-500 border border-slate-700 transition rounded-xl p-5 text-left">
 
                   <div className="text-yellow-400 text-lg font-semibold">
                     🟡 Due Tomorrow
