@@ -18,6 +18,13 @@ function Dashboard() {
 
   const [teamPending, setTeamPending] = useState(0);
   const [teamCompleted, setTeamCompleted] = useState(0);
+  const [teamOverdue, setTeamOverdue] = useState(0);
+  const [teamToday, setTeamToday] = useState(0);
+  const [teamTomorrow, setTeamTomorrow] = useState(0);
+
+  const [personalOverdue, setPersonalOverdue] = useState(0);
+  const [personalToday, setPersonalToday] = useState(0);
+  const [personalTomorrow, setPersonalTomorrow] =  useState(0);
 
   const [roomCode, setRoomCode] = useState("");
   const [hiveSearch, setHiveSearch] = useState("");
@@ -38,6 +45,24 @@ function Dashboard() {
 
       let completed = 0;
       let pending = 0;
+      let overdue = 0;
+      let dueToday = 0;
+      let dueTomorrow = 0;
+
+              const today = new Date();
+
+        today.setHours(
+          0,
+          0,
+          0,
+          0
+        );
+
+        const tomorrow = new Date(today);
+
+        tomorrow.setDate(
+          tomorrow.getDate() + 1
+        );
 
       for (const hive of response.data) {
         const taskResponse = await api.get(
@@ -51,6 +76,42 @@ function Dashboard() {
 
         const tasks = taskResponse.data;
 
+        for (const task of tasks) {
+
+          if (
+            task.status === "completed" || !task.due_date
+          ) {
+            continue;
+          }
+
+          const taskDate = new Date(
+            task.due_date
+          );
+
+          taskDate.setHours(
+            0,
+            0,
+            0,
+            0
+          );
+
+          if (taskDate < today) {
+            overdue++;
+          }
+
+          else if (
+            taskDate.getTime() === today.getTime()
+          ) {
+            dueToday++;
+          }
+
+          else if (
+            taskDate.getTime() === tomorrow.getTime()
+          ) {
+            dueTomorrow++;
+          }
+      }
+
         completed += tasks.filter(
           (task) => task.status === "completed"
         ).length;
@@ -62,6 +123,10 @@ function Dashboard() {
 
       setTeamCompleted(completed);
       setTeamPending(pending);
+
+      setTeamOverdue(overdue);
+      setTeamToday(dueToday);
+      setTeamTomorrow(dueTomorrow);
     } catch (error) {
       console.log(error.response);
     }
@@ -81,6 +146,52 @@ function Dashboard() {
       );
 
       const tasks = response.data;
+      const today = new Date();
+
+      today.setHours(
+        0,
+        0,
+        0,
+        0
+      );
+
+      const tomorrow = new Date(today);
+
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      let overdue = 0;
+      let dueToday = 0;
+      let dueTomorrow = 0;
+
+      for (const task of tasks) {
+
+        if (task.status === "completed" || !task.due_date) {
+          continue;
+        }
+
+        const taskDate = new Date(
+          task.due_date
+        );
+
+        taskDate.setHours(
+          0,
+          0,
+          0,
+          0
+        );
+
+        if (taskDate < today) {
+          overdue++;
+        }
+
+        else if (taskDate.getTime() === today.getTime()) {
+          dueToday++;
+        }
+
+        else if (taskDate.getTime() === tomorrow.getTime()) {
+          dueTomorrow++;
+        }
+      }
 
       const completed = tasks.filter(
         (task) => task.status === "completed"
@@ -91,6 +202,10 @@ function Dashboard() {
       setPersonalPending(
         tasks.length - completed
       );
+      setPersonalOverdue(overdue);
+      setPersonalToday(dueToday);
+      setPersonalTomorrow(dueTomorrow);
+
     } catch (error) {
       console.log(error.response);
     }
@@ -129,8 +244,8 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    fetchHives();
     fetchPersonalTasks();
+    fetchHives();
   }, []);
 
   return (
@@ -150,6 +265,18 @@ function Dashboard() {
         personalCompleted={personalCompleted}
         teamPending={teamPending}
         teamCompleted={teamCompleted}
+
+        overdueCount={
+          teamOverdue + personalOverdue
+        }
+
+        todayCount={
+          teamToday + personalToday
+        }
+
+        tomorrowCount={
+          teamTomorrow + personalTomorrow
+        }
       />
 
       <div className="grid lg:grid-cols-2 gap-8 items-start">

@@ -8,6 +8,9 @@ function HeroCards({
   personalCompleted,
   teamPending,
   teamCompleted,
+  overdueCount,
+  todayCount,
+  tomorrowCount,
 }) {
   return (
     <div className="grid lg:grid-cols-3 gap-6 mb-12">
@@ -133,10 +136,58 @@ function HeroCards({
           </div>
 
         </div>
-      </div>
+            </div>
 
-    </div>
-  );
-}
+            <div className="lg:col-span-3 bg-slate-900 rounded-2xl p-7 border border-slate-800 shadow-xl">
+
+              <h2 className="text-2xl font-bold mb-6">
+                Upcoming Deadlines
+              </h2>
+
+              <div className="grid md:grid-cols-3 gap-4">
+
+                <button className="bg-slate-800 hover:bg-slate-700 transition rounded-xl p-5 text-left">
+
+                  <div className="text-red-400 text-lg font-semibold">
+                    🔴 Overdue
+                  </div>
+
+                  <div className="text-3xl font-bold mt-2">
+                    {overdueCount}
+                  </div>
+
+                </button>
+
+                <button className="bg-slate-800 hover:bg-slate-700 transition rounded-xl p-5 text-left">
+
+                  <div className="text-orange-400 text-lg font-semibold">
+                    🟠 Due Today
+                  </div>
+
+                  <div className="text-3xl font-bold mt-2">
+                    {todayCount}
+                  </div>
+
+                </button>
+
+                <button className="bg-slate-800 hover:bg-slate-700 transition rounded-xl p-5 text-left">
+
+                  <div className="text-yellow-400 text-lg font-semibold">
+                    🟡 Due Tomorrow
+                  </div>
+
+                  <div className="text-3xl font-bold mt-2">
+                    {tomorrowCount}
+                  </div>
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+        );
+      }
 
 export default HeroCards;
