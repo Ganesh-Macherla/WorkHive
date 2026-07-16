@@ -26,8 +26,13 @@ function Dashboard() {
   const [personalToday, setPersonalToday] = useState(0);
   const [personalTomorrow, setPersonalTomorrow] =  useState(0);
 
+  const [allHiveTasks, setAllHiveTasks] = useState([]);
+  const [allPersonalTasks, setAllPersonalTasks] = useState([]);
+
   const [roomCode, setRoomCode] = useState("");
   const [hiveSearch, setHiveSearch] = useState("");
+  const [selectedDeadline, setSelectedDeadline] = useState("overdue");
+  const [showDeadlineModal, setShowDeadlineModal] = useState(false);
 
   const username = localStorage.getItem("username");
 
@@ -48,6 +53,7 @@ function Dashboard() {
       let overdue = 0;
       let dueToday = 0;
       let dueTomorrow = 0;
+      let hiveTasksData = [];
 
               const today = new Date();
 
@@ -75,6 +81,11 @@ function Dashboard() {
         );
 
         const tasks = taskResponse.data;
+        hiveTasksData.push({
+          hiveId: hive.id,
+          hiveName: hive.name,
+          tasks,
+        });
 
         for (const task of tasks) {
 
@@ -127,6 +138,7 @@ function Dashboard() {
       setTeamOverdue(overdue);
       setTeamToday(dueToday);
       setTeamTomorrow(dueTomorrow);
+      setAllHiveTasks(hiveTasksData);
     } catch (error) {
       console.log(error.response);
     }
@@ -146,6 +158,7 @@ function Dashboard() {
       );
 
       const tasks = response.data;
+      setAllPersonalTasks(tasks);
       const today = new Date();
 
       today.setHours(
@@ -243,6 +256,64 @@ function Dashboard() {
     navigate("/");
   };
 
+  const matchesDeadline = (task, deadlineType) => {
+    if (
+      task.status === "completed" || !task.due_date
+    ) {
+      return false;
+    }
+
+    const today = new Date();
+
+    today.setHours(
+      0,
+      0,
+      0,
+      0
+    );
+
+    const tomorrow = new Date(today);
+
+    tomorrow.setDate(
+      tomorrow.getDate() + 1
+    );
+
+    const taskDate = new Date(
+      task.due_date
+    );
+
+    taskDate.setHours(
+      0,
+      0,
+      0,
+      0
+    );
+
+    if (deadlineType === "overdue") {
+      return taskDate < today;
+    }
+
+    if (deadlineType === "today") {
+      return (
+        taskDate.getTime() ===
+        today.getTime()
+      );
+    }
+
+    if (deadlineType === "tomorrow") {
+      return (
+        taskDate.getTime() ===
+        tomorrow.getTime()
+      );
+    }
+
+    return false;
+  };
+    const handleDeadlineClick = (type) => {
+      setSelectedDeadline(type);
+      setShowDeadlineModal(true);
+    };
+
   useEffect(() => {
     fetchPersonalTasks();
     fetchHives();
@@ -256,7 +327,7 @@ function Dashboard() {
       />
 
       <HeroCards
-        navigate={navigate}
+          navigate={navigate}
         roomCode={roomCode}
         setRoomCode={setRoomCode}
         handleJoinHive={handleJoinHive}
@@ -265,19 +336,11 @@ function Dashboard() {
         personalCompleted={personalCompleted}
         teamPending={teamPending}
         teamCompleted={teamCompleted}
-
-        overdueCount={
-          teamOverdue + personalOverdue
-        }
-
-        todayCount={
-          teamToday + personalToday
-        }
-
-        tomorrowCount={
-          teamTomorrow + personalTomorrow
-        }
-      />
+        overdueCount={teamOverdue + personalOverdue}
+        todayCount={teamToday + personalToday}
+        tomorrowCount={teamTomorrow + personalTomorrow}
+        onDeadlineClick={handleDeadlineClick}
+          />
 
       <div className="grid lg:grid-cols-2 gap-8 items-start">
         <HiveSection
@@ -289,6 +352,107 @@ function Dashboard() {
 
         <PersonalTaskSection />
       </div>
+      {showDeadlineModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-8 w-[90%] max-w-4xl max-h-[80vh] overflow-y-auto">
+
+            <div className="flex justify-between items-center mb-6">
+
+              <h2 className="text-3xl font-bold">
+                {selectedDeadline === "overdue" && "🔴 Overdue Tasks"}
+                {selectedDeadline === "today" && "🟠 Due Today"}
+                {selectedDeadline === "tomorrow" && "🟡 Due Tomorrow"}
+              </h2>
+
+              <button
+                onClick={() => setShowDeadlineModal(false)}
+                className="text-slate-400 hover:text-white text-2xl"
+              >
+                ✕
+              </button>
+
+            </div>
+
+            <h3 className="text-xl font-semibold mb-4">
+              Personal Tasks
+            </h3>
+
+            <div className="space-y-3 mb-8">
+
+              {allPersonalTasks
+                .filter((task) =>
+                  matchesDeadline(
+                    task,
+                    selectedDeadline
+                  )
+                )
+                .map((task) => (
+
+                <div
+                  key={task.id}
+                  className="bg-slate-800 rounded-xl p-4"
+                >
+                  {task.title}
+                </div>
+
+              ))}
+
+            </div>
+
+            <h3 className="text-xl font-semibold mb-4">
+              Hive Tasks
+            </h3>
+
+            <div className="space-y-5">
+
+              {allHiveTasks.map((hive) => (
+
+                <div key={hive.hiveId}>
+
+                  {hive.tasks.some((task) =>
+                    matchesDeadline(
+                      task,
+                      selectedDeadline
+                    )
+                  ) && (
+                    <h4 className="text-violet-400 font-bold mb-2">
+                      {hive.hiveName}
+                    </h4>
+                  )}
+
+                  <div className="space-y-2">
+
+                    {hive.tasks
+                      .filter((task) =>
+                        matchesDeadline(
+                          task,
+                          selectedDeadline
+                        )
+                      )       
+                      .map((task) => (
+
+                      <div
+                        key={task.id}
+                        className="bg-slate-800 rounded-xl p-4"
+                      >
+                        {task.title}
+                      </div>
+
+                    ))}
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
     </div>
   );
 }

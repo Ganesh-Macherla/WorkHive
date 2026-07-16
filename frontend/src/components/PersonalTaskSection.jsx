@@ -2,7 +2,9 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
-function PersonalTaskSection() {
+function PersonalTaskSection({
+  deadlineFilter,
+}) {
   const [tasks, setTasks] = useState([]);
 
   const [title, setTitle] = useState("");
@@ -19,14 +21,16 @@ function PersonalTaskSection() {
   const [editPriority, setEditPriority] =
     useState("medium");
 
-  const [filter, setFilter] =
-    useState("all");
+  const [filter, setFilter] = useState("all");
+  useEffect(() => {
+    if (deadlineFilter) {
+      setFilter(deadlineFilter);
+    }
+}, [deadlineFilter]);
 
-  const [sortBy, setSortBy] =
-    useState("newest");
+  const [sortBy, setSortBy] = useState("newest");
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchTasks = async () => {
     try {

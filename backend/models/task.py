@@ -58,8 +58,5 @@ class Task(db.Model):
         nullable=True
     )
 
-    priority = db.Column(
-        db.String(20),
-        default="medium"
-    )
+
     
