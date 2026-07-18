@@ -9,6 +9,7 @@ from models.user import User
 from models.hive import Hive
 from models.hive_member import HiveMember
 from models.task import Task
+from models.activity import Activity
 
 from routes.auth import auth_bp
 from routes.hive import hive_bp

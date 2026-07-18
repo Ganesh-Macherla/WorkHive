@@ -14,9 +14,7 @@ from extensions import db
 
 import random
 import string
-
-
-
+from activity_logger import log_activity
 
 hive_bp = Blueprint("hive", __name__)
 
@@ -64,6 +62,16 @@ def create_hive():
 
     db.session.add(hive_member)
     db.session.commit()
+
+    user = User.query.get(
+        current_user_id
+    )
+
+    log_activity(
+        new_hive.id,
+        current_user_id,
+        f"{user.username} created the hive"
+    )
 
     return {
         "id": new_hive.id,
@@ -116,6 +124,15 @@ def join_hive():
 
     db.session.add(new_member)
     db.session.commit()
+    user = User.query.get(
+        current_user_id
+    )
+
+    log_activity(
+        hive.id,
+        current_user_id,
+        f"{user.username} joined the hive"
+    )
 
     return {
         "message": "Joined hive successfully",
