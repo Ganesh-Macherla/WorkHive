@@ -5,6 +5,7 @@ from flask_jwt_extended import (jwt_required,get_jwt_identity)
 from models.task import Task
 from models.hive_member import HiveMember
 from models.user import User
+from activity_logger import log_activity
 
 from extensions import db
 
@@ -66,6 +67,15 @@ def create_task():
 
     db.session.add(task)
     db.session.commit()
+    user = User.query.get(
+        current_user_id
+    )
+
+    log_activity(
+        hive_id,
+        current_user_id,
+        f'{user.username} created "{task.title}"'
+    )
 
     return {
         "id": task.id,
@@ -157,6 +167,15 @@ def complete_task(task_id):
     task.status = "completed"
 
     db.session.commit()
+    user = User.query.get(
+        current_user_id
+    )
+
+    log_activity(
+        task.hive_id,
+        current_user_id,
+        f'{user.username} completed "{task.title}"'
+    )
 
     return {
         "message": "Task marked completed"
@@ -191,6 +210,15 @@ def delete_task(task_id):
             "error": "Not authorized"
         }, 403
 
+    user = User.query.get(
+        current_user_id
+    )
+
+    log_activity(
+        task.hive_id,
+        current_user_id,
+        f'{user.username} deleted "{task.title}"'
+    )
     db.session.delete(task)
     db.session.commit()
 
@@ -238,26 +266,19 @@ def update_task(task_id):
     else:
         task.due_date = None
 
-    task.title = data.get(
-        "title",
-        task.title
+    task.title = data.get("title",task.title)
+    task.description = data.get("description",task.description)
+    task.assigned_to = data.get("assigned_to",task.assigned_to)
+    task.priority = data.get("priority", task.priority)
+    user = User.query.get(
+        current_user_id
     )
 
-    task.description = data.get(
-        "description",
-        task.description
+    log_activity(
+        task.hive_id,
+        current_user_id,
+        f'{user.username} updated "{task.title}"'
     )
-
-    task.assigned_to = data.get(
-        "assigned_to",
-        task.assigned_to
-    )
-
-    task.priority = data.get(
-        "priority",
-        task.priority
-    )
-
     db.session.commit()
 
     return {
