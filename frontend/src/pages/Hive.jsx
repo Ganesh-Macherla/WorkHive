@@ -556,10 +556,15 @@ function Hive() {
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
-        
+
         <div className="mt-8">
           <ActivityFeed
             activities={activities}
+              activities={activities.slice(0, 6)}
+              hiveId={id}
+              showViewAll={
+                activities.length > 6
+              }
           />
         </div>
       </div>

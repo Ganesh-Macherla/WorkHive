@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 function HiveHeader({
   hive,
   taskCount,
@@ -5,15 +7,36 @@ function HiveHeader({
   completedCount,
   pendingCount,
 }) {
+
+  const navigate = useNavigate();
+
   return (
     <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 shadow-xl">
-      <h1 className="text-4xl font-bold">
-        {hive.name}
-      </h1>
 
-      <p className="text-slate-400 mt-3">
-        Collaborative workspace
-      </p>
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+
+        <div>
+
+          <h1 className="text-4xl font-bold">
+            {hive.name}
+          </h1>
+
+          <p className="text-slate-400 mt-3">
+            Collaborative workspace
+          </p>
+
+        </div>
+
+        <button
+          onClick={() =>
+            navigate("/dashboard")
+          }
+          className="bg-slate-800 hover:bg-slate-700 px-5 py-3 rounded-xl font-medium transition"
+        >
+          ← Dashboard
+        </button>
+
+      </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 mt-8">
 
@@ -70,6 +93,7 @@ function HiveHeader({
       </div>
 
       <div className="mt-8 pt-6 border-t border-slate-800">
+
         <div className="flex items-center justify-between">
 
           <span className="text-slate-400">
@@ -81,7 +105,9 @@ function HiveHeader({
           </span>
 
         </div>
+
       </div>
+
     </div>
   );
 }
