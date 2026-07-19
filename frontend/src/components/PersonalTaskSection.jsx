@@ -423,7 +423,7 @@ function PersonalTaskSection({
 
           <input
             type="text"
-            placeholder="🔍 Search tasks..."
+            placeholder="Search tasks..."
             value={searchQuery}
             onChange={(e) =>
               setSearchQuery(e.target.value)

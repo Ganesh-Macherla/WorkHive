@@ -64,10 +64,25 @@ function HeroCards({
 
       {/* Your Workspace Stats */}
       <div className="bg-slate-900 rounded-2xl p-7 border border-slate-800 shadow-xl">
-        <h2 className="text-2xl font-bold mb-6">
+        <h2 className="text-2xl font-bold">
           Your Workspace Stats
         </h2>
 
+        <button
+            onClick={() => navigate("/statistics")}
+            className="
+                text-violet-400
+                hover:text-violet-300
+                text-sm
+                font-semibold
+                transition
+                mt-2
+                mb-6
+            "
+        >
+            View All Statistics
+        </button>
+        
         <div className="space-y-5">
 
           <div className="flex justify-between">

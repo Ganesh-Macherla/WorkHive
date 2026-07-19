@@ -115,6 +115,10 @@ function Profile() {
         {profile.email}
       </p>
 
+      <p className="text-slate-400 mt-2 text-lg">
+            Your personal analytics
+        </p>
+
       <div className="grid grid-cols-2 gap-6 mt-10">
 
         <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900">

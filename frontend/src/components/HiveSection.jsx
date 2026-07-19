@@ -29,7 +29,7 @@ function HiveSection({
 
         <input
           type="text"
-          placeholder="🔍 Search hives..."
+          placeholder="Search hives..."
           value={hiveSearch}
           onChange={(e) => setHiveSearch(e.target.value)}
           className="w-full rounded-xl bg-slate-800 border border-slate-700 px-5 py-4 pr-12 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
