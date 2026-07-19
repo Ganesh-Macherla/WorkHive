@@ -14,6 +14,7 @@ from models.activity import Activity
 from routes.auth import auth_bp
 from routes.hive import hive_bp
 from routes.task import task_bp
+from routes.activity import activity_bp
 from models.personal_task import PersonalTask
 from routes.personal_task import personal_task_bp
 
@@ -30,6 +31,7 @@ migrate = Migrate(app, db)
 app.register_blueprint(auth_bp)
 app.register_blueprint(hive_bp)
 app.register_blueprint(task_bp)
+app.register_blueprint(activity_bp)
 app.register_blueprint(personal_task_bp)
 
 @app.route("/")
