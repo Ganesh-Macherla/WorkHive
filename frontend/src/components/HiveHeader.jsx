@@ -33,7 +33,7 @@ function HiveHeader({
           }
           className="bg-slate-800 hover:bg-slate-700 px-5 py-3 rounded-xl font-medium transition"
         >
-          ← Dashboard
+          Back to Dashboard
         </button>
 
       </div>
