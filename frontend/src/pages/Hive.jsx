@@ -2,11 +2,11 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
-
 import HiveHeader from "../components/HiveHeader";
 import TaskForm from "../components/TaskForm";
 import TaskSection from "../components/TaskSection";
 import MemberSection from "../components/MemberSection";
+import ActivityFeed from "../components/ActivityFeed";
 
 function Hive() {
   const { id } = useParams();
@@ -14,7 +14,7 @@ function Hive() {
   const [hive, setHive] = useState(null);
 
   const [tasks, setTasks] = useState([]);
-
+  const [activities, setActivities] = useState([]);
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,6 +64,40 @@ function Hive() {
     }
   };
 
+  const fetchActivities =
+    async () => {
+
+      try {
+
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+        const response =
+          await api.get(
+            `/hives/${id}/activities`,
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+        setActivities(
+          response.data
+        );
+
+      } catch (error) {
+
+        console.log(
+          error.response
+        );
+
+      }
+    };
+
   const fetchMembers = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -103,6 +137,7 @@ function Hive() {
     fetchHive();
     fetchTasks();
     fetchMembers();
+    fetchActivities();
   }, [id]);
 
   const handleCreateTask = async () => {
@@ -152,6 +187,7 @@ function Hive() {
       }
 
       fetchTasks();
+      fetchActivities();
     } catch (error) {
       console.log(error.response);
     }
@@ -180,6 +216,7 @@ function Hive() {
       );
 
       fetchTasks();
+      fetchActivities();
     } catch (error) {
       console.log(error.response);
     }
@@ -207,6 +244,7 @@ function Hive() {
       );
 
       fetchTasks();
+      fetchActivities();
     } catch (error) {
       console.log(error.response);
     }
@@ -314,6 +352,7 @@ function Hive() {
         );
       }
       fetchTasks();
+      fetchActivities();
     } catch (error) {
       console.log(error.response);
     }
@@ -517,6 +556,12 @@ function Hive() {
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
+        
+        <div className="mt-8">
+          <ActivityFeed
+            activities={activities}
+          />
+        </div>
       </div>
     </div>
   );
