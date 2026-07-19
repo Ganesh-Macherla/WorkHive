@@ -7,6 +7,7 @@ import PersonalTaskSection from "../components/PersonalTaskSection";
 import DashboardHeader from "../components/DashboardHeader";
 import HeroCards from "../components/HeroCards";
 import HiveSection from "../components/HiveSection";
+import Navbar from "../components/Navbar";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -321,6 +322,7 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-10">
+      <Navbar />
       <DashboardHeader
         username={username}
         handleLogout={handleLogout}
