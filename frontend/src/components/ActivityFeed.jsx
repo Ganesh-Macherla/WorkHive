@@ -57,6 +57,16 @@ function ActivityFeed({
                   {activity.action}
                 </p>
 
+                {activity.hive_name && !hiveId && (
+
+                    <p className="text-sm text-violet-400 mt-2">
+
+                        Hive Room: {activity.hive_name}
+
+                    </p>
+
+                    )}
+
                 <p className="text-sm text-slate-400 mt-2">
                   {new Date(
                     activity.created_at
