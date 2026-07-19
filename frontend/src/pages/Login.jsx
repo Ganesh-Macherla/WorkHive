@@ -28,6 +28,13 @@ function Login() {
       response.data.username
     );
 
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        id: response.data.id,
+        username: response.data.username
+      })
+    );
 
     navigate("/dashboard");
 

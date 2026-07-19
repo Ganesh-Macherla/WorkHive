@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
 
 function Navbar() {
+
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
   return (
+
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 mb-6">
+
       <div className="flex gap-6 items-center">
 
         <Link
@@ -13,7 +20,7 @@ function Navbar() {
         </Link>
 
         <Link
-          to="/profile"
+          to={`/profile/${user?.id}`}
           className="text-slate-300 hover:text-violet-400"
         >
           Profile
@@ -48,7 +55,9 @@ function Navbar() {
         </Link>
 
       </div>
+
     </div>
+
   );
 }
 

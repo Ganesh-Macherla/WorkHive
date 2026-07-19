@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function MemberSection({ hiveId }) {
   const [members, setMembers] = useState([]);
+  const navigate = useNavigate();
 
   const fetchMembers = async () => {
     try {
@@ -65,11 +67,24 @@ function MemberSection({ hiveId }) {
 
             </div>
 
-            {member.role === "owner" && (
-              <span className="text-yellow-400 font-semibold">
-                👑
-              </span>
+            <div className="flex items-center gap-4">
+
+              <button
+                onClick={() =>
+                  navigate(`/profile/${member.id}`)
+                }
+                className="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                Visit Profile
+              </button>
+
+              {member.role === "owner" && (
+                <span className="text-yellow-400 font-semibold">
+                  👑
+                </span>
             )}
+
+            </div>
           </div>
         ))}
 

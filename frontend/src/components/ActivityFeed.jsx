@@ -24,7 +24,7 @@ function ActivityFeed({
       </div>
 
       <p className="text-slate-400 mb-8">
-        Recent activity in this hive.
+        Recent activity.
       </p>
 
       {activities.length === 0 ? (

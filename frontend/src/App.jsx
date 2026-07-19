@@ -22,7 +22,7 @@ function App() {
       <Route path="/create-hive" element={<CreateHive />} />
       <Route path="/hive/:id" element={<Hive />} />
       <Route path="/hive/:id/activity" element={<ActivityLog />}/>
-      <Route path="/profile" element={<Profile />}/>
+      <Route path="/profile/:id" element={<Profile />}/>
       <Route path="/search" element={<Search />}/>
       <Route path="/calender" element={<Calender />}/>
       <Route path="/notifications" element={<Notifications />}/>
