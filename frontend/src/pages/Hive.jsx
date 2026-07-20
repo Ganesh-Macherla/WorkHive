@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import HiveHeader from "../components/HiveHeader";
 import TaskForm from "../components/TaskForm";
@@ -10,7 +11,12 @@ import ActivityFeed from "../components/ActivityFeed";
 
 function Hive() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
+  const currentUser = JSON.parse(
+      localStorage.getItem("user")
+  ) || {};
+  
   const [hive, setHive] = useState(null);
 
   const [tasks, setTasks] = useState([]);
@@ -358,6 +364,133 @@ function Hive() {
     }
   };
 
+  const handleDeleteHive = async () => {
+
+    const confirmed = window.confirm(
+
+        "Delete this hive permanently?\n\nThis will delete all tasks and activities."
+
+    );
+
+    if (!confirmed) {
+
+        return;
+    }
+
+    try {
+
+        const token = localStorage.getItem(
+            "token"
+        );
+
+        await api.delete(
+
+            `/hives/${id}`,
+
+            {
+
+                headers: {
+
+                    Authorization:
+                        `Bearer ${token}`
+
+                }
+
+            }
+
+        );
+
+        toast.success(
+
+            "Hive deleted successfully"
+
+        );
+
+        navigate(
+            "/dashboard"
+        );
+
+    } catch (error) {
+
+        console.log(
+            error.response
+        );
+
+        toast.error(
+
+            error.response?.data?.error
+
+        );
+
+    }
+
+};
+
+
+const handleLeaveHive = async () => {
+
+    const confirmed = window.confirm(
+
+        "Are you sure you want to leave this hive?"
+
+    );
+
+    if (!confirmed) {
+
+        return;
+    }
+
+    try {
+
+        const token = localStorage.getItem(
+            "token"
+        );
+
+        await api.post(
+
+            `/hives/${id}/leave`,
+
+            {},
+
+            {
+
+                headers: {
+
+                    Authorization:
+                        `Bearer ${token}`
+
+                }
+
+            }
+
+        );
+
+        toast.success(
+
+            "You left the hive"
+
+        );
+
+        navigate(
+            "/dashboard"
+        );
+
+    } catch (error) {
+
+        console.log(
+            error.response
+        );
+
+        toast.error(
+
+            error.response?.data?.error
+
+        );
+
+    }
+
+};
+
   if (!hive) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white text-2xl">
@@ -505,6 +638,42 @@ function Hive() {
         completedCount={completedCount}
         pendingCount={pendingCount}
       />
+
+      <div className="flex justify-end gap-4 mt-6">
+
+    <button
+
+        onClick={handleLeaveHive}
+
+        className="bg-slate-800 hover:bg-slate-700 px-5 py-2 rounded-xl"
+
+    >
+
+        Leave Hive
+
+    </button>
+
+    {
+
+        hive.owner_id === currentUser.id && (
+
+            <button
+
+                onClick={handleDeleteHive}
+
+                className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-xl"
+
+            >
+
+                Delete Hive
+
+            </button>
+
+        )
+
+    }
+
+</div>
 
       <div className="grid lg:grid-cols-3 gap-8 mt-8">
         <div className="lg:col-span-2">
