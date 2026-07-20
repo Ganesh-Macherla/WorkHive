@@ -12,7 +12,7 @@ Built with React, Flask, SQLite, and JWT authentication.
 
 ### Demo Video (Version 1)
 
-[![WorkHive Demo](media/demoV1.mp4)]
+[![WorkHive Demo](media/demoV1.mp4)](https://github.com/Ganesh-Macherla/WorkHive/blob/main/media/demoV1.mp4)
 ## Features
 
 ### Authentication
