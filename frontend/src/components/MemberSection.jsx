@@ -79,7 +79,7 @@ function MemberSection({ hiveId }) {
               </button>
 
               {member.role === "owner" && (
-                <span className="text-yellow-400 font-semibold">
+                <span className="text-yellow-200 font-semibold">
                   👑
                 </span>
             )}

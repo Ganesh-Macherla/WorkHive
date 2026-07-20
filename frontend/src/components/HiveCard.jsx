@@ -18,7 +18,7 @@ function HiveCard({ hive, navigate }) {
         onClick={() => navigate(`/hive/${hive.id}`)}
         className="mt-5 bg-violet-600 hover:bg-violet-700 px-5 py-2 rounded-xl font-semibold transition"
       >
-        Open Workspace →
+        Open Workspace 
       </button>
     </div>
   );
