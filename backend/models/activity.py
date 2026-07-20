@@ -12,7 +12,7 @@ class Activity(db.Model):
     hive_id = db.Column(
         db.Integer,
         db.ForeignKey("hive.id"),
-        nullable=False
+        nullable=True
     )
 
     user_id = db.Column(

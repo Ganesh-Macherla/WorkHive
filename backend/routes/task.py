@@ -5,9 +5,10 @@ from flask_jwt_extended import (jwt_required,get_jwt_identity)
 from models.task import Task
 from models.hive_member import HiveMember
 from models.user import User
-from activity_logger import log_activity
+from models.hive import Hive
 
 from extensions import db
+from activity_logger import log_activity
 
 
 task_bp = Blueprint("task", __name__)
@@ -284,3 +285,59 @@ def update_task(task_id):
     return {
         "message": "Task updated successfully"
     }, 200
+
+@task_bp.route(
+    "/calendar",
+    methods=["GET"]
+)
+@jwt_required()
+def get_calendar_tasks():
+
+    current_user_id = int(
+        get_jwt_identity()
+    )
+
+    memberships = HiveMember.query.filter_by(
+        user_id=current_user_id
+    ).all()
+
+    hive_ids = [
+        membership.hive_id
+        for membership in memberships
+    ]
+
+    tasks = Task.query.filter(
+        Task.hive_id.in_(hive_ids),
+        Task.due_date.isnot(None)
+    ).all()
+
+    result = []
+
+    for task in tasks:
+
+        hive = Hive.query.get(
+            task.hive_id
+        )
+
+        result.append({
+
+            "id": task.id,
+
+            "title": task.title,
+
+            "status": task.status,
+
+            "priority": task.priority,
+
+            "due_date": task.due_date.isoformat(),
+
+            "hive_name": hive.name
+
+        })
+
+    result.sort(
+        key=lambda task:
+        task["due_date"]
+    )
+
+    return result, 200

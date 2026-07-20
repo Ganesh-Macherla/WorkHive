@@ -17,6 +17,9 @@ from routes.task import task_bp
 from routes.activity import activity_bp
 from models.personal_task import PersonalTask
 from routes.personal_task import personal_task_bp
+from routes.profile import profile_bp
+from routes.statistics import statistics_bp
+from routes.notifications import notifications_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -33,7 +36,9 @@ app.register_blueprint(hive_bp)
 app.register_blueprint(task_bp)
 app.register_blueprint(activity_bp)
 app.register_blueprint(personal_task_bp)
-
+app.register_blueprint(profile_bp)
+app.register_blueprint(statistics_bp)
+app.register_blueprint(notifications_bp)
 @app.route("/")
 def home():
     return {

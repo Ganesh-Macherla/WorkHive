@@ -15,6 +15,10 @@ class Hive(db.Model):
         nullable=False
     )
 
+    description = db.Column(
+        db.Text
+    )
+
     room_code = db.Column(
         db.String(10),
         unique=True,

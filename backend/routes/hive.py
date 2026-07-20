@@ -8,6 +8,8 @@ from flask_jwt_extended import (
 from models.hive import Hive
 from models.hive_member import HiveMember
 from models.user import User
+from models.task import Task
+from models.activity import Activity
 
 
 from extensions import db
@@ -183,7 +185,8 @@ def get_hive(hive_id):
     return {
         "id": hive.id,
         "name": hive.name,
-        "room_code": hive.room_code
+        "room_code": hive.room_code,
+        "owner_id": hive.owner_id
     }, 200
 
 @hive_bp.route("/hives/<int:hive_id>/members", methods=["GET"])
@@ -210,3 +213,109 @@ def get_hive_members(hive_id):
             })
 
     return members, 200
+
+@hive_bp.route(
+    "/hives/<int:hive_id>",
+    methods=["DELETE"]
+)
+@jwt_required()
+def delete_hive(hive_id):
+
+    current_user_id = int(
+        get_jwt_identity()
+    )
+
+    hive = Hive.query.get(
+        hive_id
+    )
+
+    if not hive:
+
+        return {
+            "error": "Hive not found"
+        }, 404
+
+    if hive.owner_id != current_user_id:
+
+        return {
+            "error": "Only the owner can delete this hive"
+        }, 403
+
+    Task.query.filter_by(
+        hive_id=hive_id
+    ).delete()
+
+    Activity.query.filter_by(
+        hive_id=hive_id
+    ).delete()
+
+    HiveMember.query.filter_by(
+        hive_id=hive_id
+    ).delete()
+
+    db.session.delete(
+        hive
+    )
+
+    db.session.commit()
+
+    return {
+        "message": "Hive deleted successfully"
+    }, 200
+
+@hive_bp.route(
+    "/hives/<int:hive_id>/leave",
+    methods=["POST"]
+)
+@jwt_required()
+def leave_hive(hive_id):
+
+    current_user_id = int(
+        get_jwt_identity()
+    )
+
+    hive = Hive.query.get(
+        hive_id
+    )
+
+    if not hive:
+
+        return {
+            "error": "Hive not found"
+        }, 404
+
+    membership = HiveMember.query.filter_by(
+        hive_id=hive_id,
+        user_id=current_user_id
+    ).first()
+
+    if not membership:
+
+        return {
+            "error": "You are not a member"
+        }, 404
+
+    if hive.owner_id == current_user_id:
+
+        member_count = HiveMember.query.filter_by(hive_id=hive_id).count()
+
+        if member_count > 1:
+            return {
+                "error":
+                "Transfer ownership or delete the hive first"
+            }, 403
+
+        return {
+            "error":
+            "Delete the hive instead"
+        }, 403
+
+    db.session.delete(
+        membership
+    )
+
+    db.session.commit()
+
+    return {
+        "message": "Left hive successfully"
+    }, 200

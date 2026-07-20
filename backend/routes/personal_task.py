@@ -8,6 +8,8 @@ from flask_jwt_extended import (
 
 from models.personal_task import PersonalTask
 from extensions import db
+from models.user import User
+from activity_logger import log_activity
 
 personal_task_bp = Blueprint(
     "personal_task",
@@ -54,6 +56,15 @@ def create_personal_task():
 
     db.session.add(task)
     db.session.commit()
+    user = User.query.get(
+        int(get_jwt_identity())
+    )
+
+    log_activity(
+        None,
+        user.id,
+        f'{user.username} created personal task "{task.title}"'
+    )
 
     return {
         "id": task.id,
@@ -122,6 +133,13 @@ def complete_personal_task(task_id):
     task.status = "completed"
 
     db.session.commit()
+    user = User.query.get(current_user)
+
+    log_activity(
+        None,
+        user.id,
+        f'{user.username} completed personal task "{task.title}"'
+    )
 
     return {
         "message": "Task completed"
@@ -179,6 +197,13 @@ def update_personal_task(task_id):
     )
 
     db.session.commit()
+    user = User.query.get(current_user)
+
+    log_activity(
+        None,
+        user.id,
+        f'{user.username} updated personal task "{task.title}"'
+    )
 
     return {
         "message": "Task updated"
@@ -209,6 +234,13 @@ def delete_personal_task(task_id):
         }, 403
 
     db.session.delete(task)
+    user = User.query.get(current_user)
+
+    log_activity(
+        None,
+        user.id,
+        f'{user.username} deleted personal task "{task.title}"'
+    )
 
     db.session.commit()
 

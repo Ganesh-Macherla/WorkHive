@@ -94,6 +94,7 @@ def login():
 
     return {
         "access_token": access_token,
+        "id": user.id,
         "username": user.username
     }, 200
 
