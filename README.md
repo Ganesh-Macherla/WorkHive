@@ -2,7 +2,7 @@
 
 ### Collaborative workspace platform for managing teams, tasks, deadlines, and project activity.
 
-WorkHive is a full-stack productivity and collaboration platform that enables teams to organize projects inside shared workspaces called hives. Users can create and join hives, assign tasks, track deadlines, manage personal todos, monitor activity, and analyze productivity metrics from a centralized dashboard.
+WorkHive is a full-stack productivity and collaboration platform that enables teams to organize projects inside shared workspaces called hives. Users can create and join hives via room codes, assign tasks, track deadlines, manage personal todos, monitor activity, and analyze productivity metrics from a centralized dashboard.
 
 Built with React, Flask, SQLite, and JWT authentication.
 
